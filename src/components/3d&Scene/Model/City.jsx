@@ -8,7 +8,7 @@ import { useGLTF } from '@react-three/drei'
 export default function Model(props) {
   const { nodes, materials } = useGLTF('/molde.glb')
   return (
-    <group scale={0.4} rotation={[Math.PI / 2, 0, 0]} {...props} dispose={null}>
+    <group scale={0.4} {...props} dispose={null}>
          <ambientLight intensity={0.5} />
          {/* <directionalLight position={[10, 10, 5]} intensity={1} /> */}
       <mesh
