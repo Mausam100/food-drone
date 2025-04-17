@@ -10,6 +10,8 @@ import {
     Image,
     Float,
   } from "@react-three/drei";
+  import Drone from "./Model/Drone";
+import City from "./Model/City";
 
 export const Scene = () => {
 return (
@@ -17,7 +19,7 @@ return (
         <ambientLight intensity={0.5} />
         <directionalLight position={[10, 10, 5]} intensity={1} />
         <mesh>
-            <sphereGeometry args={[100, 100, 100]} />
+            <sphereGeometry args={[50, 50, 50]} />
             <meshStandardMaterial side={THREE.BackSide} transparent opacity={1}>
                 <GradientTexture
                     stops={[0, 0.5, 1]}
@@ -28,12 +30,8 @@ return (
             </meshStandardMaterial>
         </mesh>
         <mesh position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-            <planeGeometry args={[100, 100]} />
-            <meshStandardMaterial color="green" side={THREE.DoubleSide} />
-            <mesh position={[0, 0, 0.5]}>
-                <boxGeometry args={[1, 1, 1]} />
-                <meshStandardMaterial color="orange" side={THREE.DoubleSide} />
-            </mesh>
+            <Drone/>
+            <City/>
         </mesh>
     </>
 );
