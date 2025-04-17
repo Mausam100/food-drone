@@ -2,7 +2,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
-import { GradientTexture, Text } from "@react-three/drei";
+import { Environment, GradientTexture, Text } from "@react-three/drei";
 import { Physics, RigidBody } from "@react-three/rapier";
 import Drone from "./Model/Drone";
 import City from "./Model/City";
@@ -88,7 +88,14 @@ export const Scene = () => {
       {/* Lighting */}
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 5]} intensity={1} />
-
+      <Environment
+       preset="city"
+        background
+        backgroundBlurriness={0.05}
+        backgroundIntensity={0.5}
+        environmentIntensity={0.8}
+        backgroundRotation={[0, Math.PI / 2, 0]}
+      />
       {/* Skybox */}
       <mesh>
         <sphereGeometry args={[50, 50, 50]} />
