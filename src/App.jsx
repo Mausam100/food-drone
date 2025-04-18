@@ -10,13 +10,15 @@ const keyMap = [
   { name: "right", keys: ["d"] },
   { name: "up", keys: ["ArrowUp"] },
   { name: "down", keys: ["ArrowDown"] },
+  { name: "rotateLeft", keys: ["ArrowLeft"] },
+  { name: "rotateRight", keys: ["ArrowRight"] },
 ];
 
 function App() {
   return (
     <div className="w-full h-screen">
       <KeyboardControls map={keyMap}>
-        <Canvas camera={{ position: [0, 5, 10], fov: 50 }}>
+        <Canvas camera={{ position: [0, 5, 10], fov: 30 }}>
           <Scene />
         </Canvas>
       </KeyboardControls>
