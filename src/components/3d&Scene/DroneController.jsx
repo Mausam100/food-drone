@@ -1,7 +1,7 @@
 import { useKeyboardControls } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { RigidBody, useRapier } from "@react-three/rapier";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Drone from "./Model/Drone";
 import * as THREE from "three";
 
@@ -107,7 +107,7 @@ function DroneController() {
       lockRotations={false}
       linearDamping={2}
       angularDamping={2}
-      position={[0, 5, 0]}
+      position={[21.2, 2.3, -17]}
     >
       <Drone rotation={[0, rotation, 0]} />
     </RigidBody>
