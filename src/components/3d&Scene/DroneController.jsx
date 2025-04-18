@@ -18,6 +18,8 @@ function DroneController({ touchControls, setTouchControls }) {
   const cameraOffset = new THREE.Vector3(0, 2, 5);
   const firstPersonOffset = new THREE.Vector3(0, -1, 0);
   const cameraTarget = useRef(new THREE.Vector3());
+  const cameraPosition = useRef(new THREE.Vector3());
+  const cameraLookAt = useRef(new THREE.Vector3());
 
   useEffect(() => {
     const handleTouchStart = (e) => {
@@ -29,14 +31,12 @@ function DroneController({ touchControls, setTouchControls }) {
         const x = touch.clientX - rect.left;
         const y = touch.clientY - rect.top;
         
-        // Left side for joystick
         if (x < window.innerWidth / 2) {
           setTouchControls(prev => ({
             ...prev,
             joystick: { active: true, x, y }
           }));
         }
-        // Right side for rotation
         else {
           if (x > window.innerWidth * 0.75) {
             setTouchControls(prev => ({ ...prev, rotateRight: true }));
@@ -53,7 +53,7 @@ function DroneController({ touchControls, setTouchControls }) {
       for (let i = 0; i < touches.length; i++) {
         const touch = touches[i];
         const rect = e.target.getBoundingClientRect();
-        const x = -touch.clientX - rect.left;
+        const x = touch.clientX - rect.left;
         const y = touch.clientY - rect.top;
         
         if (x < window.innerWidth / 2) {
@@ -93,35 +93,40 @@ function DroneController({ touchControls, setTouchControls }) {
 
     const { forward, backward, left, right, up, down, rotateLeft, rotateRight, firstPerson } = getKeys();
 
-    // Toggle first person view with 'F' key
     if (firstPerson && !lastFirstPersonToggle.current) {
       setIsFirstPerson(!isFirstPerson);
     }
     lastFirstPersonToggle.current = firstPerson;
 
-    // Handle rotation with arrow keys or touch
     const keyboardRotation = (rotateLeft ? 0.01 : 0) + (rotateRight ? -0.01 : 0);
     const touchRotation = (touchControls.rotateLeft ? 0.01 : 0) + (touchControls.rotateRight ? -0.01 : 0);
     setRotation(prev => prev + keyboardRotation + touchRotation);
 
-    // Update camera position and rotation
     const pos = body.translation();
     const euler = new THREE.Euler(0, rotation, 0);
     
     if (isFirstPerson) {
       const firstPersonPos = firstPersonOffset.clone().applyEuler(euler);
-      camera.position.set(
-        pos.x + firstPersonPos.x,
-        pos.y + firstPersonPos.y,
-        pos.z + firstPersonPos.z
+      cameraPosition.current.lerp(
+        new THREE.Vector3(
+          pos.x + firstPersonPos.x,
+          pos.y + firstPersonPos.y,
+          pos.z + firstPersonPos.z
+        ),
+        0.1
       );
+      camera.position.copy(cameraPosition.current);
       camera.rotation.set(0, rotation, 0);
       const lookDirection = new THREE.Vector3(0, -1.2, -1).applyEuler(euler);
-      camera.lookAt(
-        pos.x + lookDirection.x,
-        pos.y + lookDirection.y,
-        pos.z + lookDirection.z
+      cameraLookAt.current.lerp(
+        new THREE.Vector3(
+          pos.x + lookDirection.x,
+          pos.y + lookDirection.y,
+          pos.z + lookDirection.z
+        ),
+        0.1
       );
+      camera.lookAt(cameraLookAt.current);
     } else {
       const rotatedOffset = cameraOffset.clone().applyEuler(euler);
       cameraTarget.current.lerp(
@@ -130,17 +135,20 @@ function DroneController({ touchControls, setTouchControls }) {
           pos.y + rotatedOffset.y,
           pos.z + rotatedOffset.z
         ),
-        0.03
+        0.05
       );
-      camera.position.copy(cameraTarget.current);
-      camera.lookAt(pos.x, pos.y, pos.z);
+      cameraPosition.current.lerp(cameraTarget.current, 0.1);
+      camera.position.copy(cameraPosition.current);
+      cameraLookAt.current.lerp(
+        new THREE.Vector3(pos.x, pos.y, pos.z),
+        0.1
+      );
+      camera.lookAt(cameraLookAt.current);
     }
 
-    // Calculate movement direction based on rotation and touch controls
     direction.set(0, 0, 0);
     const moveDirection = new THREE.Vector3(0, 0, -1).applyEuler(euler);
     
-    // Keyboard controls
     if (forward) direction.add(moveDirection);
     if (backward) direction.sub(moveDirection);
     if (left) direction.add(new THREE.Vector3(moveDirection.z, 0, -moveDirection.x));
@@ -148,7 +156,6 @@ function DroneController({ touchControls, setTouchControls }) {
     if (up) direction.y += 1;
     if (down) direction.y -= 1;
 
-    // Touch controls
     if (touchControls.joystick.active) {
       const joystickX = (touchControls.joystick.x - window.innerWidth / 4) / (window.innerWidth / 4);
       const joystickY = (touchControls.joystick.y - window.innerHeight / 2) / (window.innerHeight / 2);
@@ -159,15 +166,14 @@ function DroneController({ touchControls, setTouchControls }) {
 
     direction.normalize();
 
-    // Apply velocity
     velocity.set(
-      direction.x * 4,
-      direction.y * 4,
-      direction.z * 4
+      direction.x * 5,
+      direction.y * 5,
+      direction.z * 5
     );
 
     body.setLinvel(velocity, true);
-    body.setRotation({ x: 0, y: rotation, z: 0, w: 1 }, true);
+    body.setRotation({ x: 0, y: rotation, z: 0, w: 0 }, true);
   });
 
   return (

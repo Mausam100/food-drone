@@ -26,8 +26,8 @@ export const Scene = ({ touchControls, setTouchControls }) => {
       </mesh>
 
       {/* Physics World */}
-      <Physics gravity={[0, 0, 0]}>
-        <RigidBody type="fixed" colliders="trimesh">
+      <Physics gravity={[0, 0, 0]} colliders="trimesh">
+        <RigidBody type="fixed">
           <City />
         </RigidBody>
         <DroneController touchControls={touchControls} setTouchControls={setTouchControls} />
