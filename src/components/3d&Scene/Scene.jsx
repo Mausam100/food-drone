@@ -5,7 +5,7 @@ import { Physics, RigidBody } from "@react-three/rapier";
 import City from "./Model/City";
 import DroneController from "./DroneController";
 
-export const Scene = () => {
+export const Scene = ({ touchControls, setTouchControls }) => {
   return (
     <>
       <ambientLight intensity={1} />
@@ -30,7 +30,7 @@ export const Scene = () => {
         <RigidBody type="fixed" colliders="trimesh">
           <City />
         </RigidBody>
-        <DroneController />
+        <DroneController touchControls={touchControls} setTouchControls={setTouchControls} />
       </Physics>
     </>
   );
