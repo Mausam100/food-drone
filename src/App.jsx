@@ -1,18 +1,27 @@
-import { useState } from 'react'
-import { Canvas } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei'
-import { Scene } from './components/3d&Scene/Scene'
+import React from "react";
+import { Canvas } from "@react-three/fiber";
+import { KeyboardControls } from "@react-three/drei";
+import { Scene } from "./components/3d&Scene/Scene";
+
+const keyMap = [
+  { name: "forward", keys: ["w"] },
+  { name: "backward", keys: ["s"] },
+  { name: "left", keys: ["a"] },
+  { name: "right", keys: ["d"] },
+  { name: "up", keys: ["ArrowUp"] },
+  { name: "down", keys: ["ArrowDown"] },
+];
 
 function App() {
-
   return (
-    <>
-      <Canvas style={{ width: '100vw', height: '100vh' }}>
-        <Scene/>
-        <OrbitControls />
-      </Canvas>
-    </>
-  )
+    <div className="w-full h-screen">
+      <KeyboardControls map={keyMap}>
+        <Canvas camera={{ position: [0, 5, 10], fov: 50 }}>
+          <Scene />
+        </Canvas>
+      </KeyboardControls>
+    </div>
+  );
 }
 
-export default App
+export default App;

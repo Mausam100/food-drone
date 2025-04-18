@@ -1,28 +1,17 @@
-// Scene.jsx
-import React, { useRef, useEffect, useState } from "react";
+import React from "react";
 import * as THREE from "three";
-import { useFrame } from "@react-three/fiber";
-import { Environment, GradientTexture, Text } from "@react-three/drei";
+import { GradientTexture, Environment } from "@react-three/drei";
 import { Physics, RigidBody } from "@react-three/rapier";
-import Drone from "./Model/Drone";
 import City from "./Model/City";
 import DroneController from "./DroneController";
 
 export const Scene = () => {
- 
   return (
     <>
-      {/* Lighting */}
-      <ambientLight intensity={0.5} />
+      <ambientLight intensity={1} />
       <directionalLight position={[10, 10, 5]} intensity={1} />
-      <Environment
-        preset="city"
-        background
-        backgroundBlurriness={0.05}
-        backgroundIntensity={0.5}
-        environmentIntensity={0.8}
-        backgroundRotation={[0, Math.PI / 2, 0]}
-      />
+      <Environment preset="city" />
+
       {/* Skybox */}
       <mesh>
         <sphereGeometry args={[50, 50, 50]} />
@@ -37,12 +26,11 @@ export const Scene = () => {
       </mesh>
 
       {/* Physics World */}
-      <Physics debug>
-        <DroneController/>
-        {/* City */}
+      <Physics gravity={[0, 0, 0]}>
         <RigidBody type="fixed" colliders="trimesh">
           <City />
         </RigidBody>
+        <DroneController />
       </Physics>
     </>
   );
