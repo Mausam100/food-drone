@@ -50,8 +50,8 @@ function DroneController() {
     
     if (forward) direction.add(moveDirection);
     if (backward) direction.sub(moveDirection);
-    if (left) direction.add(new THREE.Vector3(-moveDirection.z, 0, moveDirection.x));
-    if (right) direction.add(new THREE.Vector3(moveDirection.z, 0, -moveDirection.x));
+    if (left) direction.add(new THREE.Vector3(moveDirection.z, 0, -moveDirection.x));
+    if (right) direction.add(new THREE.Vector3(-moveDirection.z, 0, moveDirection.x));
     if (up) direction.y += 1;
     if (down) direction.y -= 1;
 
