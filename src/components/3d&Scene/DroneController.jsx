@@ -10,39 +10,69 @@ function DroneController() {
   const [subscribeKeys, getKeys] = useKeyboardControls();
   const { camera } = useThree();
   const [rotation, setRotation] = useState(0);
+  const [isFirstPerson, setIsFirstPerson] = useState(false);
+  const lastFirstPersonToggle = useRef(false);
 
   const direction = new THREE.Vector3();
   const velocity = new THREE.Vector3();
   const cameraOffset = new THREE.Vector3(0, 2, 5);
+  const firstPersonOffset = new THREE.Vector3(0, -1, 0); // Camera position below drone
   const cameraTarget = useRef(new THREE.Vector3());
 
   useFrame(() => {
     const body = droneRef.current;
     if (!body) return;
 
-    const { forward, backward, left, right, up, down, rotateLeft, rotateRight } = getKeys();
+    const { forward, backward, left, right, up, down, rotateLeft, rotateRight, firstPerson } = getKeys();
+
+    // Toggle first person view with 'F' key (with debounce)
+    if (firstPerson && !lastFirstPersonToggle.current) {
+      setIsFirstPerson(!isFirstPerson);
+    }
+    lastFirstPersonToggle.current = firstPerson;
 
     // Handle camera rotation with arrow keys
-    if (rotateLeft) setRotation(prev => prev + 0.02);
-    if (rotateRight) setRotation(prev => prev - 0.02);
+    if (rotateLeft) setRotation(prev => prev + 0.01);
+    if (rotateRight) setRotation(prev => prev - 0.01);
 
     // Update camera position and rotation
     const pos = body.translation();
     const euler = new THREE.Euler(0, rotation, 0);
-    const rotatedOffset = cameraOffset.clone().applyEuler(euler);
     
-    // Optimize camera follow
-    cameraTarget.current.lerp(
-      new THREE.Vector3(
-        pos.x + rotatedOffset.x,
-        pos.y + rotatedOffset.y,
-        pos.z + rotatedOffset.z
-      ),
-      0.3 // Faster camera follow for reduced lag
-    );
-    
-    camera.position.copy(cameraTarget.current);
-    camera.lookAt(pos.x, pos.y, pos.z);
+    if (isFirstPerson) {
+      // First person camera from bottom
+      const firstPersonPos = firstPersonOffset.clone().applyEuler(euler);
+      camera.position.set(
+        pos.x + firstPersonPos.x,
+        pos.y + firstPersonPos.y,
+        pos.z + firstPersonPos.z
+      );
+      
+      // Set camera rotation to match drone's rotation
+      camera.rotation.set(0, rotation, 0);
+      
+      // Look in the direction the drone is facing
+      const lookDirection = new THREE.Vector3(0, -1.2, -1).applyEuler(euler);
+      camera.lookAt(
+        pos.x + lookDirection.x,
+        pos.y + lookDirection.y,
+        pos.z + lookDirection.z
+      );
+      
+    } else {
+      // Third person camera
+      const rotatedOffset = cameraOffset.clone().applyEuler(euler);
+      cameraTarget.current.lerp(
+        new THREE.Vector3(
+          pos.x + rotatedOffset.x,
+          pos.y + rotatedOffset.y,
+          pos.z + rotatedOffset.z
+        ),
+        0.03
+      );
+      camera.position.copy(cameraTarget.current);
+      camera.lookAt(pos.x, pos.y, pos.z);
+    }
 
     // Calculate movement direction based on rotation
     direction.set(0, 0, 0);

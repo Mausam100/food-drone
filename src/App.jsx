@@ -12,6 +12,7 @@ const keyMap = [
   { name: "down", keys: ["ArrowDown"] },
   { name: "rotateLeft", keys: ["ArrowLeft"] },
   { name: "rotateRight", keys: ["ArrowRight"] },
+  { name: "firstPerson", keys: ["f"] },
 ];
 
 function App() {
