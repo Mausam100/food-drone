@@ -41,6 +41,9 @@ function App() {
   };
 
   const handleReachEnd = () => {
+    setPoint1Reached(false);
+    setPoint2Reached(false);
+    setPoint3Reached(false);
     setShowEndOverlay(true);
   };
 
