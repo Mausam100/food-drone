@@ -4,11 +4,13 @@ import { GradientTexture, Environment } from "@react-three/drei";
 import { Physics, RigidBody } from "@react-three/rapier";
 import City from "./Model/City";
 import DroneController from "./DroneController";
-import { StartPoint, EndPoint } from "./GamePoints";
+import GamePoints from "./GamePoints";
 
 export const Scene = ({ touchControls, setTouchControls }) => {
   return (
     <>
+      <color attach="background" args={["#ffffff"]} />
+      <fog attach="fog" args={["#ffffff", 10, 100]} />
       <ambientLight intensity={1} />
       <directionalLight position={[10, 10, 5]} intensity={1} />
       <Environment preset="city" />
@@ -34,8 +36,8 @@ export const Scene = ({ touchControls, setTouchControls }) => {
         <DroneController touchControls={touchControls} setTouchControls={setTouchControls} />
         
         {/* Game Points */}
-        <StartPoint position={[21.2, 2, -18]} />
-        <EndPoint position={[-32.2, 2.1, 10]} />
+        <GamePoints.StartPoint position={[18, 3.2, -18]} />
+        <GamePoints.EndPoint position={[-32.2, 2.1, 10]} />
       </Physics>
     </>
   );

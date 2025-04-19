@@ -5,11 +5,8 @@ import { Text } from '@react-three/drei';
 
 const StartPoint = ({ position }) => {
   return (
-    <RigidBody type="fixed" colliders="trimesh">
-      {/* <mesh position={position} rotation={[-Math.PI / 2, 0, 0]}>
-        <cylinderGeometry args={[1, 1, 0.2, 42]} />
-        <meshStandardMaterial color="#000f00" transparent opacity={0.5} />
-      </mesh> */}
+    <RigidBody type="fixed" sensor>
+     
       <Text
         rotation={[0, Math.PI / 2, 0]}
         position={[position[0], position[1] + 1.1, position[2]]}
@@ -46,5 +43,58 @@ const EndPoint = ({ position }) => {
     </RigidBody>
   );
 };
+const FollowPoint = ({ position }) => {
+  return (
+    <RigidBody type="fixed" sensor>
+      <Text position={position} fontSize={1} color="white" anchorX="center" anchorY="middle">
+        FOLLOW
+      </Text>
+    </RigidBody>
+  );
+};
 
-export { StartPoint, EndPoint }; 
+const DronePosition = ({ position }) => {
+  return (
+    <group position={[0, 0, 0]}>
+      {/* Position indicator */}
+      <mesh position={[0, -0.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[0.5, 0.7, 32]} />
+        <meshStandardMaterial color="#00c3ae" transparent opacity={0.8} />
+      </mesh>
+      
+      {/* Glowing effect */}
+      <mesh position={[0, -0.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[0.7, 0.9, 32]} />
+        <meshStandardMaterial 
+          color="#00c3ae" 
+          transparent 
+          opacity={0.3}
+          emissive="#00c3ae"
+          emissiveIntensity={0.5}
+        />
+      </mesh>
+
+      {/* Position text */}
+      <Text
+        position={[0, 0.5, 0]}
+        fontSize={0.3}
+        color="white"
+        anchorX="center"
+        anchorY="middle"
+        outlineWidth={0.02}
+        outlineColor="#000000"
+      >
+        {`X: ${position[0].toFixed(1)} Y: ${position[1].toFixed(1)} Z: ${position[2].toFixed(1)}`}
+      </Text>
+    </group>
+  );
+};
+
+const GamePoints = {
+  StartPoint,
+  EndPoint,
+  FollowPoint,
+  DronePosition
+};
+
+export default GamePoints;

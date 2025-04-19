@@ -4,6 +4,7 @@ import { RigidBody, useRapier } from "@react-three/rapier";
 import { useEffect, useRef, useState } from "react";
 import Drone from "./Model/Drone";
 import * as THREE from "three";
+import GamePoints from "./GamePoints";
 
 function DroneController({ touchControls, setTouchControls }) {
   const droneRef = useRef();
@@ -13,6 +14,7 @@ function DroneController({ touchControls, setTouchControls }) {
   const [isFirstPerson, setIsFirstPerson] = useState(false);
   const [hasReachedEnd, setHasReachedEnd] = useState(false);
   const lastFirstPersonToggle = useRef(false);
+  const [dronePosition, setDronePosition] = useState([21.2, 3.3, -18]);
 
   const direction = new THREE.Vector3();
   const velocity = new THREE.Vector3();
@@ -22,21 +24,7 @@ function DroneController({ touchControls, setTouchControls }) {
   const cameraPosition = useRef(new THREE.Vector3());
   const cameraLookAt = useRef(new THREE.Vector3());
 
-  const resetDrone = () => {
-    const body = droneRef.current;
-    if (body) {
-      // Reset position to start point
-      body.setTranslation({ x: 21.2, y: 2.3, z: -18 }, true);
-      // Reset rotation
-      body.setRotation({ x: 0, y: 0, z: 0, w: 1 }, true);
-      // Reset velocity
-      body.setLinvel({ x: 0, y: 0, z: 0 }, true);
-      body.setAngvel({ x: 0, y: 0, z: 0 }, true);
-      // Reset state
-      setRotation(0);
-      setHasReachedEnd(false);
-    }
-  };
+
 
   useEffect(() => {
     const handleTouchStart = (e) => {
@@ -120,12 +108,13 @@ function DroneController({ touchControls, setTouchControls }) {
     setRotation(prev => prev + keyboardRotation + touchRotation);
 
     const pos = body.translation();
-    const dronePosition = new THREE.Vector3(pos.x, pos.y, pos.z);
+    setDronePosition([pos.x, pos.y, pos.z]);
     
     // Check if drone has reached the end point
     if (!hasReachedEnd) {
       const endPoint = new THREE.Vector3(-32.2, 2.1, 10);
-      const distance = dronePosition.distanceTo(endPoint);
+      const dronePos = new THREE.Vector3(pos.x, pos.y, pos.z);
+      const distance = dronePos.distanceTo(endPoint);
       if (distance < 2) {
         setHasReachedEnd(true);
         alert("Congratulations! You've reached the end point! Opening reference website...");
@@ -210,12 +199,16 @@ function DroneController({ touchControls, setTouchControls }) {
     <RigidBody
       ref={droneRef}
       colliders="cuboid"
-      lockRotations={false}
       linearDamping={2}
       angularDamping={2}
-      position={[21.2, 2.3, -18]}
+      lockRotations={false}
+      position={[21.2, 3.3, -18]}
     >
       <Drone rotation={[0, rotation, 0]} />
+      <group position={[0, -1, 0]}>
+        <GamePoints.DronePosition position={dronePosition} />
+      </group>
+      {/* <Arrow position={[18.2, 4.3, -18]} /> */}
     </RigidBody>
   );
 }

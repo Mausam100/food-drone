@@ -38,11 +38,17 @@ function App() {
   return (
     <div className="w-full h-screen">
       <KeyboardControls map={keyMap}>
-        <Canvas camera={{ position: [0, 5, 10], fov: 30 }}>
+        <Canvas camera={{ 
+          position: [21.2, 2.3, -38], 
+          fov: 30,
+          near: 0.1,    // Objects closer than 0.1 units won't be rendered
+          far: 1000     // Objects further than 1000 units won't be rendered
+        }}>
           <Scene touchControls={touchControls} setTouchControls={setTouchControls} />
         </Canvas>
       </KeyboardControls>
       {isMobile && <MobileControls touchControls={touchControls} />}
+      
     </div>
   );
 }
