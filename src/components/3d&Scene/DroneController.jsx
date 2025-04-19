@@ -202,7 +202,7 @@ function DroneController({ touchControls, setTouchControls }) {
       
       if (magnitude > deadzone) {
         // Normalize and scale the input
-        const normalizedX = joystickX / magnitude;
+        const normalizedX = -joystickX / magnitude;
         const normalizedY = joystickY / magnitude;
         
         // Apply movement with smooth acceleration
@@ -210,7 +210,7 @@ function DroneController({ touchControls, setTouchControls }) {
         const acceleration = 0.1;
         
         direction.add(moveDirection.clone().multiplyScalar(-normalizedY * moveSpeed * acceleration));
-        direction.add(new THREE.Vector3(moveDirection.z, 0, moveDirection.x).multiplyScalar(normalizedX * moveSpeed * acceleration));
+        direction.add(new THREE.Vector3(moveDirection.z, 0, -moveDirection.x).multiplyScalar(normalizedX * moveSpeed * acceleration));
       }
     }
 
