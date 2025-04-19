@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 
 export function MobileControls({ touchControls, setTouchControls }) {
   const [showRotateOverlay, setShowRotateOverlay] = useState(false);
+  const [joystickCenter, setJoystickCenter] = useState({ x: 0, y: 0 });
+  const [joystickPosition, setJoystickPosition] = useState({ x: 0, y: 0 });
 
   // Orientation check
   useEffect(() => {
@@ -30,6 +32,60 @@ export function MobileControls({ touchControls, setTouchControls }) {
     }));
   };
 
+  const handleJoystickStart = (e) => {
+    e.preventDefault();
+    const rect = e.target.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    setJoystickCenter({ x: centerX, y: centerY });
+    
+    const x = e.touches[0].clientX - centerX;
+    const y = e.touches[0].clientY - centerY;
+    setJoystickPosition({ x, y });
+    
+    setTouchControls(prev => ({
+      ...prev,
+      joystick: { active: true, x, y }
+    }));
+  };
+
+  const handleJoystickMove = (e) => {
+    e.preventDefault();
+    const x = e.touches[0].clientX - joystickCenter.x;
+    const y = e.touches[0].clientY - joystickCenter.y;
+    
+    // Calculate distance from center
+    const distance = Math.sqrt(x * x + y * y);
+    const maxDistance = 60; // Maximum distance the joystick can move
+    
+    // Normalize if outside the max distance
+    if (distance > maxDistance) {
+      const angle = Math.atan2(y, x);
+      const normalizedX = Math.cos(angle) * maxDistance;
+      const normalizedY = Math.sin(angle) * maxDistance;
+      setJoystickPosition({ x: normalizedX, y: normalizedY });
+      setTouchControls(prev => ({
+        ...prev,
+        joystick: { active: true, x: normalizedX, y: normalizedY }
+      }));
+    } else {
+      setJoystickPosition({ x, y });
+      setTouchControls(prev => ({
+        ...prev,
+        joystick: { active: true, x, y }
+      }));
+    }
+  };
+
+  const handleJoystickEnd = (e) => {
+    e.preventDefault();
+    setJoystickPosition({ x: 0, y: 0 });
+    setTouchControls(prev => ({
+      ...prev,
+      joystick: { active: false, x: 0, y: 0 }
+    }));
+  };
+
   return (
     <>
       {/* ROTATE PHONE OVERLAY */}
@@ -41,13 +97,29 @@ export function MobileControls({ touchControls, setTouchControls }) {
 
       {/* TOUCH CONTROLS */}
       <div className="fixed inset-0 pointer-events-none z-[1000]">
-        {/* Joystick placeholder area (shows only when active) */}
+        {/* Joystick */}
         <div
-          className={`fixed bottom-[min(5vw,30px)] left-[min(5vw,30px)] w-[min(25vw,120px)] h-[min(25vw,120px)] bg-[#2a2a72] bg-opacity-80 rounded-full ${
-            touchControls.joystick.active ? 'block' : 'hidden'
-          } backdrop-blur-sm border-2 border-[#00c3ae] border-opacity-50 shadow-lg shadow-[#00c3ae]/20 transition-all duration-300 ease-out pointer-events-auto`}
+          className="fixed bottom-[min(5vw,30px)] left-[min(5vw,30px)] w-[min(25vw,120px)] h-[min(25vw,120px)] bg-[#2a2a72] bg-opacity-80 rounded-full backdrop-blur-sm border-2 border-[#00c3ae] border-opacity-50 shadow-lg shadow-[#00c3ae]/20 transition-all duration-300 ease-out pointer-events-auto"
+          onTouchStart={handleJoystickStart}
+          onTouchMove={handleJoystickMove}
+          onTouchEnd={handleJoystickEnd}
         >
-          <div className="absolute left-1/2 top-1/2 w-[min(8vw,40px)] h-[min(8vw,40px)] bg-[#00c3ae] bg-opacity-80 rounded-full transform -translate-x-1/2 -translate-y-1/2 backdrop-blur-sm border-2 border-white border-opacity-50 shadow-md shadow-[#00c3ae]/30"></div>
+          {/* Joystick background */}
+          <div className="absolute inset-0 rounded-full bg-[#2a2a72] bg-opacity-50" />
+          
+          {/* Joystick thumb */}
+          <div 
+            className="absolute left-1/2 top-1/2 w-[min(8vw,40px)] h-[min(8vw,40px)] bg-[#00c3ae] bg-opacity-90 rounded-full transform -translate-x-1/2 -translate-y-1/2 backdrop-blur-sm border-2 border-white border-opacity-50 shadow-md shadow-[#00c3ae]/30 transition-transform duration-100"
+            style={{
+              transform: `translate(${joystickPosition.x}px, ${joystickPosition.y}px)`,
+              opacity: touchControls.joystick.active ? 1 : 0.7
+            }}
+          />
+          
+          {/* Direction indicators */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-1/2 h-1/2 border-t-2 border-l-2 border-white border-opacity-30 rounded-tl-full" />
+          </div>
         </div>
 
         {/* ROTATE LEFT BUTTON */}

@@ -53,29 +53,14 @@ const FollowPoint = ({ position }) => {
   );
 };
 
-const DronePosition = ({ position }) => {
+const DronePosition = ({ position, rotation }) => {
   return (
     <group position={[0, 0, 0]}>
-      {/* Position indicator */}
-      <mesh position={[0, -0.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <ringGeometry args={[0.5, 0.7, 32]} />
-        <meshStandardMaterial color="#00c3ae" transparent opacity={0.8} />
-      </mesh>
-      
-      {/* Glowing effect */}
-      <mesh position={[0, -0.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <ringGeometry args={[0.7, 0.9, 32]} />
-        <meshStandardMaterial 
-          color="#00c3ae" 
-          transparent 
-          opacity={0.3}
-          emissive="#00c3ae"
-          emissiveIntensity={0.5}
-        />
-      </mesh>
+    
 
       {/* Position text */}
       <Text
+      
         position={[0, 0.5, 0]}
         fontSize={0.3}
         color="white"
@@ -90,11 +75,20 @@ const DronePosition = ({ position }) => {
   );
 };
 
+const point1 = ({ position }) => {
+  return (
+    <Text position={position} rotation={[0, Math.PI / 2, 0]} fontSize={0.3} color="white" anchorX="center" anchorY="middle">
+      Point 1
+    </Text>
+  );
+};
+
 const GamePoints = {
   StartPoint,
   EndPoint,
-  FollowPoint,
-  DronePosition
+  FollowPoint,  
+  DronePosition,
+  point1
 };
 
 export default GamePoints;

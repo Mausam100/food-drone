@@ -29,7 +29,7 @@ export const Scene = ({ touchControls, setTouchControls }) => {
       </mesh>
 
       {/* Physics World */}
-      <Physics gravity={[0, 0, 0]} colliders="trimesh">
+      <Physics gravity={[0, 0, 0]} colliders="trimesh" >
         <RigidBody type="fixed">
           <City />
         </RigidBody>
@@ -38,6 +38,7 @@ export const Scene = ({ touchControls, setTouchControls }) => {
         {/* Game Points */}
         <GamePoints.StartPoint position={[18, 3.2, -18]} />
         <GamePoints.EndPoint position={[-32.2, 2.1, 10]} />
+        <GamePoints.point1 position={[6.7, 5.7, -14.8]} />
       </Physics>
     </>
   );
