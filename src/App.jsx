@@ -4,6 +4,8 @@ import { KeyboardControls } from "@react-three/drei";
 import { Scene } from "./components/3d&Scene/Scene";
 import { MobileControls } from "./components/3d&Scene/MobileControls";
 import EndOverlay from "./components/Home/EndOverlay";
+import StartOverlay from "./components/Home/StartOverlay";
+
 const keyMap = [
   { name: "forward", keys: ["w"] },
   { name: "backward", keys: ["s"] },
@@ -26,16 +28,24 @@ function App() {
     up: false,
     down: false
   });
-  const [showOverlay, setShowOverlay] = useState(false);
+  const [showStartOverlay, setShowStartOverlay] = useState(true);
+  const [showEndOverlay, setShowEndOverlay] = useState(false);
   const [restartTrigger, setRestartTrigger] = useState(false);
+
+  const handleStart = () => {
+    setShowStartOverlay(false);
+  };
+
   const handleReachEnd = () => {
-    setShowOverlay(true);
+    setShowEndOverlay(true);
   };
 
   const handleRestart = () => {
-    setShowOverlay(false);
+    setShowEndOverlay(false);
     setRestartTrigger((prev) => !prev); // Toggle restart trigger to reset the drone
+    setShowStartOverlay(true); // Show the start overlay again
   };
+
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
@@ -72,12 +82,18 @@ function App() {
           setIsFirstPerson={setIsFirstPerson}
         />
       )}
-       {showOverlay && (
-          <EndOverlay
-            onRestart={handleRestart}
-            message="Congratulations! You've reached the end point!"
-          />
-        )}
+      {showStartOverlay && (
+        <StartOverlay
+          onStart={handleStart}
+          message="Welcome! Press Start to begin the game."
+        />
+      )}
+      {showEndOverlay && (
+        <EndOverlay
+          onRestart={handleRestart}
+          message="Congratulations! You've reached the end point!"
+        />
+      )}
     </div>
   );
 }

@@ -5,22 +5,9 @@ import { Text } from '@react-three/drei';
 
 const StartPoint = ({ position }) => {
   return (
-    <RigidBody type="fixed" sensor>
-     
-      <Text
-        rotation={[0, Math.PI / 2, 0]}
-        position={[position[0], position[1] + 1.1, position[2]]}
-        traverse={() => {
-          console.log('Pointer moved');
-        }}
-        fontSize={1}
-        color="white"
-        anchorX="center"
-        anchorY="middle"
-      >
-        START
-      </Text>
-    </RigidBody>
+    <>
+    
+    </>
   );
 };
 
