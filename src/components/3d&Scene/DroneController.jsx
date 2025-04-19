@@ -45,17 +45,6 @@ function DroneController({
   const minSpeed = isMobile ? 0.5 : 1; // Minimum speed
   const speedIncrement = isMobile ? 0.05 : 0.1; // Speed change rate
 
-  // Memoize the checkPoint function to avoid recreating it every frame
-  const checkPoint = useCallback((dronePos, point, hasReached, setHasReached, onReached) => {
-    if (!hasReached) {
-      const distance = dronePos.distanceTo(point);
-      if (distance < 2) {
-        setHasReached(true);
-        onReached();
-      }
-    }
-  }, []);
-
   // Memoize vectors to avoid recreating them every frame
   const vectors = useMemo(
     () => {
@@ -78,7 +67,94 @@ function DroneController({
     },
     [randomNumber, randomPoints]
   );
-  
+
+  // Memoize the checkPoint function to avoid recreating it every frame
+  const checkPoint = useCallback((dronePos, point, hasReached, setHasReached, onReached) => {
+    if (!hasReached) {
+      // Use squared distance for faster calculation
+      const dx = dronePos.x - point.x;
+      const dy = dronePos.y - point.y;
+      const dz = dronePos.z - point.z;
+      const distanceSquared = dx * dx + dy * dy + dz * dz;
+      
+      // Check against squared threshold (4 = 2^2)
+      if (distanceSquared < 4) {
+        setHasReached(true);
+        onReached();
+      }
+    }
+  }, []);
+
+  // Memoize point checking logic
+  const checkPoints = useCallback((dronePos) => {
+    if (!hasReachedPoint1) {
+      checkPoint(dronePos, vectors.point1, hasReachedPoint1, setHasReachedPoint1, onPoint1Reached);
+    }
+    if (!hasReachedPoint2) {
+      checkPoint(dronePos, vectors.point2, hasReachedPoint2, setHasReachedPoint2, onPoint2Reached);
+    }
+    if (!hasReachedPoint3) {
+      checkPoint(dronePos, vectors.point3, hasReachedPoint3, setHasReachedPoint3, onPoint3Reached);
+    }
+    if (!hasReachedEnd) {
+      checkPoint(dronePos, vectors.endPoint, hasReachedEnd, setHasReachedEnd, onReachEnd);
+    }
+  }, [
+    hasReachedPoint1,
+    hasReachedPoint2,
+    hasReachedPoint3,
+    hasReachedEnd,
+    vectors,
+    checkPoint,
+    onPoint1Reached,
+    onPoint2Reached,
+    onPoint3Reached,
+    onReachEnd
+  ]);
+
+  // Memoize camera movement logic
+  const updateCamera = useCallback((pos, rotation, isFirstPerson) => {
+    const euler = new THREE.Euler(0, rotation, 0);
+    
+    if (isFirstPerson) {
+      const firstPersonPos = vectors.firstPersonOffset.clone().applyEuler(euler);
+      cameraPosition.current.lerp(
+        new THREE.Vector3(
+          pos.x + firstPersonPos.x,
+          pos.y + firstPersonPos.y,
+          pos.z + firstPersonPos.z
+        ),
+        0.1
+      );
+      camera.position.copy(cameraPosition.current);
+      camera.rotation.set(0, rotation, 0);
+      const lookDir = vectors.lookDirection.clone().applyEuler(euler);
+      cameraLookAt.current.lerp(
+        new THREE.Vector3(
+          pos.x + lookDir.x,
+          pos.y + lookDir.y,
+          pos.z + lookDir.z
+        ),
+        0.1
+      );
+      camera.lookAt(cameraLookAt.current);
+    } else {
+      const rotatedOffset = vectors.cameraOffset.clone().applyEuler(euler);
+      cameraTarget.current.lerp(
+        new THREE.Vector3(
+          pos.x + rotatedOffset.x,
+          pos.y + rotatedOffset.y,
+          pos.z + rotatedOffset.z
+        ),
+        isMobile ? 0.5 : 0.05
+      );
+      cameraPosition.current.lerp(cameraTarget.current, 0.1);
+      camera.position.copy(cameraPosition.current);
+      cameraLookAt.current.lerp(new THREE.Vector3(pos.x, pos.y, pos.z), 0.1);
+      camera.lookAt(cameraLookAt.current);
+    }
+  }, [vectors, isMobile]);
+
   const cameraTarget = useRef(new THREE.Vector3());
   const cameraPosition = useRef(new THREE.Vector3());
   const cameraLookAt = useRef(new THREE.Vector3());
@@ -185,7 +261,7 @@ function DroneController({
       speedDown,
     } = getKeys();
 
-    // Handle speed control
+    // Handle speed control with debounce
     if (speedUp && speed < maxSpeed) {
       setSpeed(prev => Math.min(prev + speedIncrement, maxSpeed));
     }
@@ -193,128 +269,48 @@ function DroneController({
       setSpeed(prev => Math.max(prev - speedIncrement, minSpeed));
     }
 
+    // Handle first person toggle with debounce
     if (firstPerson && !lastFirstPersonToggle.current) {
       setIsFirstPerson(!isFirstPerson);
     }
     lastFirstPersonToggle.current = firstPerson;
 
-    const keyboardRotation =
-      (rotateLeft ? 0.01 : 0) + (rotateRight ? -0.01 : 0);
-    const touchRotation =
-      (touchControls.rotateLeft ? 0.01 : 0) +
-      (touchControls.rotateRight ? -0.01 : 0);
-    setRotation((prev) => prev + keyboardRotation + touchRotation);
+    // Calculate rotation
+    const keyboardRotation = (rotateLeft ? 0.01 : 0) + (rotateRight ? -0.01 : 0);
+    const touchRotation = (touchControls.rotateLeft ? 0.01 : 0) + (touchControls.rotateRight ? -0.01 : 0);
+    setRotation(prev => prev + keyboardRotation + touchRotation);
 
+    // Get position and create vector
     const pos = body.translation();
-    setDronePosition([pos.x, pos.y, pos.z]);
     const dronePos = new THREE.Vector3(pos.x, pos.y, pos.z);
 
-    // Use the memoized checkPoint function
-    checkPoint(dronePos, vectors.point1, hasReachedPoint1, setHasReachedPoint1, onPoint1Reached);
-    checkPoint(dronePos, vectors.point2, hasReachedPoint2, setHasReachedPoint2, onPoint2Reached);
-    checkPoint(dronePos, vectors.point3, hasReachedPoint3, setHasReachedPoint3, onPoint3Reached);
-    checkPoint(dronePos, vectors.endPoint, hasReachedEnd, setHasReachedEnd, onReachEnd);
+    // Update drone position state only if changed significantly
+    const [currentX, currentY, currentZ] = dronePosition;
+    if (Math.abs(currentX - pos.x) > 0.1 || 
+        Math.abs(currentY - pos.y) > 0.1 || 
+        Math.abs(currentZ - pos.z) > 0.1) {
+      setDronePosition([pos.x, pos.y, pos.z]);
+    }
 
-    // Calculate arrow rotation to point towards end point
+    // Check points
+    checkPoints(dronePos);
+
+    // Calculate arrow rotation
     const directionToEnd = vectors.endPoint.clone().sub(dronePos);
     const angle = Math.atan2(directionToEnd.x, directionToEnd.z);
     setArrowRotation(angle);
 
-    const euler = new THREE.Euler(0, rotation, 0);
+    // Update camera
+    updateCamera(pos, rotation, isFirstPerson);
 
-    if (isMobile) {
-      if (isFirstPerson) {
-        const firstPersonPos = vectors.firstPersonOffset
-          .clone()
-          .applyEuler(euler);
-        cameraPosition.current.lerp(
-          new THREE.Vector3(
-            pos.x + firstPersonPos.x,
-            pos.y + firstPersonPos.y,
-            pos.z + firstPersonPos.z
-          ),
-          0.1
-        );
-        camera.position.copy(cameraPosition.current);
-        camera.rotation.set(0, rotation, 0);
-        const lookDir = vectors.lookDirection.clone().applyEuler(euler);
-        cameraLookAt.current.lerp(
-          new THREE.Vector3(
-            pos.x + lookDir.x,
-            pos.y + lookDir.y,
-            pos.z + lookDir.z
-          ),
-          0.1
-        );
-        camera.lookAt(cameraLookAt.current);
-      } else {
-        const rotatedOffset = vectors.cameraOffset.clone().applyEuler(euler);
-        cameraTarget.current.lerp(
-          new THREE.Vector3(
-            pos.x + rotatedOffset.x,
-            pos.y + rotatedOffset.y,
-            pos.z + rotatedOffset.z
-          ),
-          0.5
-        );
-        cameraPosition.current.lerp(cameraTarget.current, 0.1);
-        camera.position.copy(cameraPosition.current);
-        cameraLookAt.current.lerp(new THREE.Vector3(pos.x, pos.y, pos.z), 0.1);
-        camera.lookAt(cameraLookAt.current);
-      }
-        
-    }else{
-      if (isFirstPerson) {
-        const firstPersonPos = vectors.firstPersonOffset
-          .clone()
-          .applyEuler(euler);
-        cameraPosition.current.lerp(
-          new THREE.Vector3(
-            pos.x + firstPersonPos.x,
-            pos.y + firstPersonPos.y,
-            pos.z + firstPersonPos.z
-          ),
-          0.1
-        );
-        camera.position.copy(cameraPosition.current);
-        camera.rotation.set(0, rotation, 0);
-        const lookDir = vectors.lookDirection.clone().applyEuler(euler);
-        cameraLookAt.current.lerp(
-          new THREE.Vector3(
-            pos.x + lookDir.x,
-            pos.y + lookDir.y,
-            pos.z + lookDir.z
-          ),
-          0.1
-        );
-        camera.lookAt(cameraLookAt.current);
-      } else {
-        const rotatedOffset = vectors.cameraOffset.clone().applyEuler(euler);
-        cameraTarget.current.lerp(
-          new THREE.Vector3(
-            pos.x + rotatedOffset.x,
-            pos.y + rotatedOffset.y,
-            pos.z + rotatedOffset.z
-          ),
-          0.05
-        );
-        cameraPosition.current.lerp(cameraTarget.current, 0.1);
-        camera.position.copy(cameraPosition.current);
-        cameraLookAt.current.lerp(new THREE.Vector3(pos.x, pos.y, pos.z), 0.1);
-        camera.lookAt(cameraLookAt.current);
-      }
-  
-    }
-
+    // Calculate movement direction
     vectors.direction.set(0, 0, 0);
-    const moveDir = vectors.moveDirection.clone().applyEuler(euler);
+    const moveDir = vectors.moveDirection.clone().applyEuler(new THREE.Euler(0, rotation, 0));
 
     if (forward) vectors.direction.add(moveDir);
     if (backward) vectors.direction.sub(moveDir);
-    if (left)
-      vectors.direction.add(new THREE.Vector3(moveDir.z, 0, -moveDir.x));
-    if (right)
-      vectors.direction.add(new THREE.Vector3(-moveDir.z, 0, moveDir.x));
+    if (left) vectors.direction.add(new THREE.Vector3(moveDir.z, 0, -moveDir.x));
+    if (right) vectors.direction.add(new THREE.Vector3(-moveDir.z, 0, moveDir.x));
 
     // Handle vertical movement
     if (up) vectors.direction.y += 1;
@@ -322,31 +318,24 @@ function DroneController({
     if (touchControls.up) vectors.direction.y += 1;
     if (touchControls.down) vectors.direction.y -= 1;
 
+    // Handle joystick movement
     if (touchControls.joystick.active) {
-      // Normalize joystick values to [-1, 1] range
-      const maxDistance = 60; // Same as in MobileControls
+      const maxDistance = 60;
       const joystickX = touchControls.joystick.x / maxDistance;
       const joystickY = touchControls.joystick.y / maxDistance;
 
-      // Apply deadzone to prevent tiny movements
       const deadzone = 0.1;
-      const magnitude = Math.sqrt(
-        joystickX * joystickX + joystickY * joystickY
-      );
+      const magnitude = Math.sqrt(joystickX * joystickX + joystickY * joystickY);
 
       if (magnitude > deadzone) {
-        // Normalize and scale the input
         const normalizedX = -joystickX / magnitude;
         const normalizedY = joystickY / magnitude;
 
-        // Apply movement with smooth acceleration
         const moveSpeed = 0.5;
         const acceleration = 0.1;
 
         vectors.direction.add(
-          moveDir
-            .clone()
-            .multiplyScalar(-normalizedY * moveSpeed * acceleration)
+          moveDir.clone().multiplyScalar(-normalizedY * moveSpeed * acceleration)
         );
         vectors.direction.add(
           new THREE.Vector3(moveDir.z, 0, -moveDir.x).multiplyScalar(
@@ -356,12 +345,9 @@ function DroneController({
       }
     }
 
+    // Normalize and apply movement
     vectors.direction.normalize();
-    setDirection([
-      vectors.direction.x,
-      vectors.direction.y,
-      vectors.direction.z,
-    ]);
+    setDirection([vectors.direction.x, vectors.direction.y, vectors.direction.z]);
 
     vectors.velocity.set(
       vectors.direction.x * speed,
@@ -369,6 +355,7 @@ function DroneController({
       vectors.direction.z * speed
     );
 
+    // Apply physics
     body.setLinvel(vectors.velocity, true);
     body.setRotation({ x: 0, y: rotation, z: 0, w: 0 }, true);
   });

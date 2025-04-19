@@ -36,8 +36,30 @@ function App() {
   const [showEndOverlay, setShowEndOverlay] = useState(false);
   const [restartTrigger, setRestartTrigger] = useState(false);
 
+  // Handle fullscreen functionality
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      // You can add any logic here that needs to run when fullscreen changes
+      console.log('Fullscreen changed:', !!document.fullscreenElement);
+    };
+
+    // Add event listener for fullscreen changes
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+
+    // Cleanup function
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    };
+  }, []);
+
   const handleStart = () => {
     setShowStartOverlay(false);
+    // Request fullscreen when game starts
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(err => {
+        console.error(`Error attempting to enable fullscreen: ${err.message}`);
+      });
+    }
   };
 
   const handleReachEnd = () => {

@@ -81,7 +81,7 @@ const StartOverlay = ({ onStart }) => {
             typeof="button"
             onClick={() => {
             
-                toggleFullScreen();
+                // toggleFullScreen();
               
               onStart();
             }}

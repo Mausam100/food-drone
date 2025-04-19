@@ -61,6 +61,38 @@ export function MobileControls({ touchControls, setTouchControls, isFirstPerson,
   const touchTimeout = useRef(null);
   const joystickRef = useRef(null);
 
+  // Add fullscreen functionality
+  const toggleFullScreen = useCallback(() => {
+    if (!document.fullscreenElement) {
+      // Try different methods for different browsers
+      const element = document.documentElement;
+      if (element.requestFullscreen) {
+        element.requestFullscreen();
+      } else if (element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen();
+      } else if (element.msRequestFullscreen) {
+        element.msRequestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      }
+    }
+  }, []);
+
+  // Handle orientation lock
+  const lockOrientation = useCallback(() => {
+    if (screen.orientation && screen.orientation.lock) {
+      screen.orientation.lock('landscape').catch(() => {
+        console.log('Orientation lock not supported');
+      });
+    }
+  }, []);
+
   // Memoized dynamic styles
   const styles = useMemo(() => ({
     joystick: {
@@ -184,7 +216,8 @@ export function MobileControls({ touchControls, setTouchControls, isFirstPerson,
         clearTimeout(touchTimeout.current);
       }
       touchTimeout.current = setTimeout(() => {
-        setShowRotateOverlay(window.matchMedia("(orientation: portrait)").matches);
+        const isPortrait = window.matchMedia("(orientation: portrait)").matches;
+        setShowRotateOverlay(isPortrait);
       }, 100);
     };
 
@@ -207,7 +240,16 @@ export function MobileControls({ touchControls, setTouchControls, isFirstPerson,
       {showRotateOverlay && (
         <div className="fixed inset-0 z-[2000] bg-black bg-opacity-90 text-white flex items-center justify-center text-center text-xl font-semibold p-4 pointer-events-auto">
           <div className="animate-pulse">
-            📱 Please rotate your phone to landscape for better experience
+            <p>📱 Please rotate your phone to landscape</p>
+            <button 
+              onClick={() => {
+                toggleFullScreen();
+                lockOrientation();
+              }}
+              className="mt-4 px-6 py-2 bg-[#00c3ae] rounded-lg text-white font-medium hover:bg-[#004a41] transition-colors"
+            >
+              Enter Fullscreen
+            </button>
           </div>
         </div>
       )}
