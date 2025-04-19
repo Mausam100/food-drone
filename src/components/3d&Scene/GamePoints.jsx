@@ -53,14 +53,14 @@ const FollowPoint = ({ position }) => {
   );
 };
 
-const DronePosition = ({ position, rotation }) => {
+const DronePosition = ({ position, rotation, arrowRotation }) => {
   return (
     <group position={[0, 0, 0]}>
-    
+  
 
-      {/* Position text */}
+      {/* Back position text */}
       <Text
-      
+        rotation={[0, rotation + Math.PI, 0]}
         position={[0, 0.5, 0]}
         fontSize={0.3}
         color="white"
