@@ -55,6 +55,9 @@ function DroneController({
 
   const resetDrone = () => {
     setHasReachedEnd(false);
+    setHasReachedPoint1(false);
+    setHasReachedPoint2(false);
+    setHasReachedPoint3(false);
     if (droneRef.current) {
       droneRef.current.setTranslation({ x: 21.2, y: 3.3, z: -18 }, true);
       droneRef.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
