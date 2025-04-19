@@ -28,7 +28,6 @@ export const Scene = ({ touchControls, setTouchControls, isFirstPerson, setIsFir
         </meshStandardMaterial>
       </mesh>
 
-      {/* Physics World */}
       <Physics gravity={[0, 0, 0]} colliders="trimesh" >
         <RigidBody type="fixed">
           <City />
