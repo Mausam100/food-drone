@@ -1,42 +1,32 @@
 import React from 'react';
 import * as THREE from 'three';
 import { RigidBody } from '@react-three/rapier';
-import { Text } from '@react-three/drei';
+import { Text, Line } from '@react-three/drei';
 
 const StartPoint = ({ position }) => {
   return (
-    <>
-    
-    </>
+    <mesh position={position} rotation={[-Math.PI / 2, 0, 0]}>
+      <cylinderGeometry args={[2, 2, 0.2, 32]} />
+      <meshStandardMaterial color="#00c3ae" transparent opacity={0.5} />
+    </mesh>
   );
 };
 
 const EndPoint = ({ position }) => {
   return (
-    <RigidBody type="fixed" sensor>
-      <mesh position={position} rotation={[-Math.PI / 2, 0, 0]}>
-        <cylinderGeometry args={[2, 2, 0.2, 32]} />
-        <meshStandardMaterial color="#ff0000" transparent opacity={0.5} />
-      </mesh>
-      <Text
-        position={[position[0], position[1] + 0.1, position[2]]}
-        fontSize={1}
-        color="white"
-        anchorX="center"
-        anchorY="middle"
-      >
-        END
-      </Text>
-    </RigidBody>
+    <mesh position={position} rotation={[-Math.PI / 2, 0, 0]}>
+      <cylinderGeometry args={[2, 2, 0.2, 32]} />
+      <meshStandardMaterial color="#ff0000" transparent opacity={0.5} />
+    </mesh>
   );
 };
+
 const FollowPoint = ({ position }) => {
   return (
-    <RigidBody type="fixed" sensor>
       <Text position={position} fontSize={1} color="white" anchorX="center" anchorY="middle">
         FOLLOW
       </Text>
-    </RigidBody>
+    
   );
 };
 
@@ -70,12 +60,27 @@ const point1 = ({ position }) => {
   );
 };
 
+const PathLine = ({ points, color = "yellow" }) => {
+  const curve = new THREE.CatmullRomCurve3(points.map((p) => new THREE.Vector3(...p)));
+  const curvePoints = curve.getPoints(100); // Increase for smoother curves
+
+  return (
+    <Line
+      points={curvePoints} // Array of points
+      color={color} // Line color
+      lineWidth={10} // Line width
+      dashed={true} // Solid line
+    />
+  );
+};
+
 const GamePoints = {
   StartPoint,
   EndPoint,
   FollowPoint,  
   DronePosition,
-  point1
+  point1,
+  PathLine
 };
 
 export default GamePoints;
