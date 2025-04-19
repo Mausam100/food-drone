@@ -183,7 +183,7 @@ export function MobileControls({ touchControls, setTouchControls, isFirstPerson,
       )}
 
       {/* TOUCH CONTROLS */}
-      <div className="fixed inset-0 pointer-events-none z-[1000]">
+      <div className="fixed inset-0 pointer-events-none z-40">
         {/* Joystick */}
         <div
           ref={joystickRef}
