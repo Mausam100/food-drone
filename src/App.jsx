@@ -41,8 +41,7 @@ function App() {
         <Canvas camera={{ 
           position: [21.2, 2.3, -38], 
           fov: 30,
-          near: 0.1,    // Objects closer than 0.1 units won't be rendered
-          far: 1000     // Objects further than 1000 units won't be rendered
+          near: 0.1,    
         }}>
           <Scene touchControls={touchControls} setTouchControls={setTouchControls} />
         </Canvas>
