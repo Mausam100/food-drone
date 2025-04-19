@@ -32,6 +32,20 @@ export const Scene = ({
   const [quality, setQuality] = useState(1);
   const [randomNumber, setRandomNumber] = useState(0);
 
+  // Memoize the random points to avoid recreating them on every render
+  const randomPoints = useMemo(() => ({
+    point1: {
+      position: [[3.1, 5.7, -14.8], [6.7, 5.7, -14.8], [9, 6.6, -9.5]],
+    },
+    point2: {
+      position: [[-12, 6.7, -2.2], [-10.4, 6.7, 14.4], [-10.5, 6.7, -4]],
+    },
+    point3: {
+      position: [[-17.3, 5.7, 12.8], [-18.7, 5.7, 14.8], [-18.7, 5.7, 12.8]],
+    }
+  }), []);
+
+  // Generate random number only once on mount
   useEffect(() => {
     setRandomNumber(Math.floor(Math.random() * 3));
   }, []);
@@ -50,16 +64,6 @@ export const Scene = ({
     []
   );
  
-  const RandomPoint1 = {
-    position: [[3.1, 5.7, -14.8], [6.7, 5.7, -14.8], [9,6.6,-9.5]],
-  }
-  const RandomPoint2 = {
-    position: [[-12, 6.7, -2.2], [-10.4, 6.7, 14.4], [-10.5, 6.7, -4]],
-  }
-  const RandomPoint3 = {
-      position: [[-17.3, 5.7, 12.8], [-18.7, 5.7, 14.8], [-18.7, 5.7, 12.8]],
-    }
-
   const physicsSettings = useMemo(
     () => ({
       gravity: [0, 0, 0],
@@ -123,26 +127,23 @@ export const Scene = ({
           onPoint1Reached={onPoint1Reached}
           onPoint2Reached={onPoint2Reached}
           onPoint3Reached={onPoint3Reached}
+          randomPoints={randomPoints}
           randomNumber={randomNumber}
-          RandomPoint1={RandomPoint1}
-          RandomPoint2={RandomPoint2}
-          RandomPoint3={RandomPoint3}
         />
 
         {/* Game Points */}
-    
         <GamePoints.CheckpointCylinder
-          position={RandomPoint1.position[randomNumber]}
+          position={randomPoints.point1.position[randomNumber]}
           height={5}
           radius={3}
         />
         <GamePoints.CheckpointCylinder
-          position={RandomPoint2.position[randomNumber]}
+          position={randomPoints.point2.position[randomNumber]}
           height={5}
           radius={3}
         />
         <GamePoints.CheckpointCylinder
-          position={RandomPoint3.position[randomNumber]}
+          position={randomPoints.point3.position[randomNumber]}
           height={5}
           radius={3}
         />

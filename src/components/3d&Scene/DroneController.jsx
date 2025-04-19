@@ -1,7 +1,7 @@
 import { useKeyboardControls } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { RigidBody, useRapier } from "@react-three/rapier";
-import { useEffect, useRef, useState, useMemo } from "react";
+import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import Drone from "./Model/Drone";
 
 import * as THREE from "three";
@@ -17,9 +17,7 @@ function DroneController({
   onPoint2Reached,
   onPoint3Reached,
   restartTrigger,
-  RandomPoint1,
-  RandomPoint2,
-  RandomPoint3,
+  randomPoints,
   randomNumber,
 }) {
   const droneRef = useRef();
@@ -36,36 +34,51 @@ function DroneController({
   const [direction, setDirection] = useState([0, 0, -1]);
   const [arrowRotation, setArrowRotation] = useState(0);
 
+  // Mobile detection
+  const isMobile = useMemo(() => {
+    return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  }, []);
+
+  // Speed settings based on device
+  const [speed, setSpeed] = useState(isMobile ? 2 : 5); // Base speed
+  const maxSpeed = isMobile ? 4 : 10; // Maximum speed
+  const minSpeed = isMobile ? 0.5 : 1; // Minimum speed
+  const speedIncrement = isMobile ? 0.05 : 0.1; // Speed change rate
+
+  // Memoize the checkPoint function to avoid recreating it every frame
+  const checkPoint = useCallback((dronePos, point, hasReached, setHasReached, onReached) => {
+    if (!hasReached) {
+      const distance = dronePos.distanceTo(point);
+      if (distance < 2) {
+        setHasReached(true);
+        onReached();
+      }
+    }
+  }, []);
+
   // Memoize vectors to avoid recreating them every frame
   const vectors = useMemo(
-    () => ({
-      direction: new THREE.Vector3(),
-      velocity: new THREE.Vector3(),
-      cameraOffset: new THREE.Vector3(0, 2, 5),
-      firstPersonOffset: new THREE.Vector3(0, -1, 0),
-      moveDirection: new THREE.Vector3(0, 0, -1),
-      lookDirection: new THREE.Vector3(0, -1, -1),
-      endPoint: new THREE.Vector3(-32.2, 2, 10),
-      point1: new THREE.Vector3(
-        RandomPoint1.position[randomNumber][0],
-        RandomPoint1.position[randomNumber][1],
-        RandomPoint1.position[randomNumber][2]
-      ),
-      point2: new THREE.Vector3(
-        RandomPoint2.position[randomNumber][0],
-        RandomPoint2.position[randomNumber][1],
-        RandomPoint2.position[randomNumber][2]
-      ),
-      point3: new THREE.Vector3(
-        RandomPoint3.position[randomNumber][0],
-        RandomPoint3.position[randomNumber][1],
-        RandomPoint3.position[randomNumber][2]
-      ),
-    }),
-    [randomNumber]
+    () => {
+      const point1Pos = randomPoints.point1.position[randomNumber];
+      const point2Pos = randomPoints.point2.position[randomNumber];
+      const point3Pos = randomPoints.point3.position[randomNumber];
+
+      return {
+        direction: new THREE.Vector3(),
+        velocity: new THREE.Vector3(),
+        cameraOffset: new THREE.Vector3(0, 0.7, 5),
+        firstPersonOffset: new THREE.Vector3(0, -1, 0),
+        moveDirection: new THREE.Vector3(0, 0, -1),
+        lookDirection: new THREE.Vector3(0, -1, -1),
+        endPoint: new THREE.Vector3(-32.2, 2, 10),
+        point1: new THREE.Vector3(point1Pos[0], point1Pos[1], point1Pos[2]),
+        point2: new THREE.Vector3(point2Pos[0], point2Pos[1], point2Pos[2]),
+        point3: new THREE.Vector3(point3Pos[0], point3Pos[1], point3Pos[2]),
+      };
+    },
+    [randomNumber, randomPoints]
   );
-  // console.log(vectors.point1);
- 
+  
   const cameraTarget = useRef(new THREE.Vector3());
   const cameraPosition = useRef(new THREE.Vector3());
   const cameraLookAt = useRef(new THREE.Vector3());
@@ -153,6 +166,7 @@ function DroneController({
     };
   }, [setTouchControls]);
 
+
   useFrame(() => {
     const body = droneRef.current;
     if (!body) return;
@@ -167,7 +181,17 @@ function DroneController({
       rotateLeft,
       rotateRight,
       firstPerson,
+      speedUp,
+      speedDown,
     } = getKeys();
+
+    // Handle speed control
+    if (speedUp && speed < maxSpeed) {
+      setSpeed(prev => Math.min(prev + speedIncrement, maxSpeed));
+    }
+    if (speedDown && speed > minSpeed) {
+      setSpeed(prev => Math.max(prev - speedIncrement, minSpeed));
+    }
 
     if (firstPerson && !lastFirstPersonToggle.current) {
       setIsFirstPerson(!isFirstPerson);
@@ -183,86 +207,103 @@ function DroneController({
 
     const pos = body.translation();
     setDronePosition([pos.x, pos.y, pos.z]);
+    const dronePos = new THREE.Vector3(pos.x, pos.y, pos.z);
+
+    // Use the memoized checkPoint function
+    checkPoint(dronePos, vectors.point1, hasReachedPoint1, setHasReachedPoint1, onPoint1Reached);
+    checkPoint(dronePos, vectors.point2, hasReachedPoint2, setHasReachedPoint2, onPoint2Reached);
+    checkPoint(dronePos, vectors.point3, hasReachedPoint3, setHasReachedPoint3, onPoint3Reached);
+    checkPoint(dronePos, vectors.endPoint, hasReachedEnd, setHasReachedEnd, onReachEnd);
 
     // Calculate arrow rotation to point towards end point
-    const dronePos = new THREE.Vector3(pos.x, pos.y, pos.z);
     const directionToEnd = vectors.endPoint.clone().sub(dronePos);
     const angle = Math.atan2(directionToEnd.x, directionToEnd.z);
     setArrowRotation(angle);
 
-    if (!hasReachedPoint1) {
-      const distanceToPoint1 = dronePos.distanceTo(vectors.point1);
-      if (distanceToPoint1 < 2) {
-        setHasReachedPoint1(true);
-        onPoint1Reached();
-      }
-    }
-
-    if (!hasReachedPoint2) {
-      const distanceToPoint2 = dronePos.distanceTo(vectors.point2);
-      if (distanceToPoint2 < 2) {
-        setHasReachedPoint2(true);
-        onPoint2Reached();
-      }
-    }
-
-    if (!hasReachedPoint3) {
-      const distanceToPoint3 = dronePos.distanceTo(vectors.point3);
-      if (distanceToPoint3 < 2) {
-        setHasReachedPoint3(true);
-        onPoint3Reached();
-      }
-    }
-
-    // Check if drone has reached the end point
-    if (!hasReachedEnd) {
-      const distance = dronePos.distanceTo(vectors.endPoint);
-      if (distance < 2) {
-        setHasReachedEnd(true);
-        onReachEnd(); // Notify the parent component
-      }
-    }
-
     const euler = new THREE.Euler(0, rotation, 0);
 
-    if (isFirstPerson) {
-      const firstPersonPos = vectors.firstPersonOffset
-        .clone()
-        .applyEuler(euler);
-      cameraPosition.current.lerp(
-        new THREE.Vector3(
-          pos.x + firstPersonPos.x,
-          pos.y + firstPersonPos.y,
-          pos.z + firstPersonPos.z
-        ),
-        0.1
-      );
-      camera.position.copy(cameraPosition.current);
-      camera.rotation.set(0, rotation, 0);
-      const lookDir = vectors.lookDirection.clone().applyEuler(euler);
-      cameraLookAt.current.lerp(
-        new THREE.Vector3(
-          pos.x + lookDir.x,
-          pos.y + lookDir.y,
-          pos.z + lookDir.z
-        ),
-        0.1
-      );
-      camera.lookAt(cameraLookAt.current);
-    } else {
-      const rotatedOffset = vectors.cameraOffset.clone().applyEuler(euler);
-      cameraTarget.current.lerp(
-        new THREE.Vector3(
-          pos.x + rotatedOffset.x,
-          pos.y + rotatedOffset.y,
-          pos.z + rotatedOffset.z
-        ),
-        0.05
-      );
-      cameraPosition.current.lerp(cameraTarget.current, 0.1);
-      camera.position.copy(cameraPosition.current);
-      cameraLookAt.current.lerp(new THREE.Vector3(pos.x, pos.y, pos.z), 0.1);
-      camera.lookAt(cameraLookAt.current);
+    if (isMobile) {
+      if (isFirstPerson) {
+        const firstPersonPos = vectors.firstPersonOffset
+          .clone()
+          .applyEuler(euler);
+        cameraPosition.current.lerp(
+          new THREE.Vector3(
+            pos.x + firstPersonPos.x,
+            pos.y + firstPersonPos.y,
+            pos.z + firstPersonPos.z
+          ),
+          0.1
+        );
+        camera.position.copy(cameraPosition.current);
+        camera.rotation.set(0, rotation, 0);
+        const lookDir = vectors.lookDirection.clone().applyEuler(euler);
+        cameraLookAt.current.lerp(
+          new THREE.Vector3(
+            pos.x + lookDir.x,
+            pos.y + lookDir.y,
+            pos.z + lookDir.z
+          ),
+          0.1
+        );
+        camera.lookAt(cameraLookAt.current);
+      } else {
+        const rotatedOffset = vectors.cameraOffset.clone().applyEuler(euler);
+        cameraTarget.current.lerp(
+          new THREE.Vector3(
+            pos.x + rotatedOffset.x,
+            pos.y + rotatedOffset.y,
+            pos.z + rotatedOffset.z
+          ),
+          0.5
+        );
+        cameraPosition.current.lerp(cameraTarget.current, 0.1);
+        camera.position.copy(cameraPosition.current);
+        cameraLookAt.current.lerp(new THREE.Vector3(pos.x, pos.y, pos.z), 0.1);
+        camera.lookAt(cameraLookAt.current);
+      }
+        
+    }else{
+      if (isFirstPerson) {
+        const firstPersonPos = vectors.firstPersonOffset
+          .clone()
+          .applyEuler(euler);
+        cameraPosition.current.lerp(
+          new THREE.Vector3(
+            pos.x + firstPersonPos.x,
+            pos.y + firstPersonPos.y,
+            pos.z + firstPersonPos.z
+          ),
+          0.1
+        );
+        camera.position.copy(cameraPosition.current);
+        camera.rotation.set(0, rotation, 0);
+        const lookDir = vectors.lookDirection.clone().applyEuler(euler);
+        cameraLookAt.current.lerp(
+          new THREE.Vector3(
+            pos.x + lookDir.x,
+            pos.y + lookDir.y,
+            pos.z + lookDir.z
+          ),
+          0.1
+        );
+        camera.lookAt(cameraLookAt.current);
+      } else {
+        const rotatedOffset = vectors.cameraOffset.clone().applyEuler(euler);
+        cameraTarget.current.lerp(
+          new THREE.Vector3(
+            pos.x + rotatedOffset.x,
+            pos.y + rotatedOffset.y,
+            pos.z + rotatedOffset.z
+          ),
+          0.05
+        );
+        cameraPosition.current.lerp(cameraTarget.current, 0.1);
+        camera.position.copy(cameraPosition.current);
+        cameraLookAt.current.lerp(new THREE.Vector3(pos.x, pos.y, pos.z), 0.1);
+        camera.lookAt(cameraLookAt.current);
+      }
+  
     }
 
     vectors.direction.set(0, 0, 0);
@@ -323,9 +364,9 @@ function DroneController({
     ]);
 
     vectors.velocity.set(
-      vectors.direction.x * 5,
-      vectors.direction.y * 5,
-      vectors.direction.z * 5
+      vectors.direction.x * speed,
+      vectors.direction.y * speed,
+      vectors.direction.z * speed
     );
 
     body.setLinvel(vectors.velocity, true);

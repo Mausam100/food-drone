@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const StartOverlay = ({ onStart }) => {
   const [controlsStep, setControlsStep] = useState(0);
+  const [fullScreen, setFullScreen] = useState(false);
 
   const handleLearnControls = () => {
     setControlsStep(1);
@@ -15,7 +16,29 @@ const StartOverlay = ({ onStart }) => {
     setControlsStep(0);
     onStart();
   };
+  const toggleFullScreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(err => {
+        console.error(`Error attempting to enable fullscreen: ${err.message}`);
+      });
+      setFullScreen(true);
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+        setFullScreen(false);
+      }
+    }
+  };
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setFullScreen(!!document.fullscreenElement);
+    };
 
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    };
+  }, []);
   if (controlsStep === 0) {
     return (
       <div className="absolute inset-0 bg-black/85 flex flex-col items-center justify-center z-50 text-white">
@@ -56,10 +79,15 @@ const StartOverlay = ({ onStart }) => {
           <div
             className="relative cursor-pointer"
             typeof="button"
-            onClick={onStart}
+            onClick={() => {
+            
+                toggleFullScreen();
+              
+              onStart();
+            }}
           >
             <img src="/button.svg" width={220} />
-            <h2 className="w-full text-center absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]">
+            <h2 className="w-full text-center absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]" >
               FLY DRONE
             </h2>
           </div>

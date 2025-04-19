@@ -90,7 +90,6 @@ export function MobileControls({ touchControls, setTouchControls, isFirstPerson,
   }, [setTouchControls]);
 
   const handleJoystickStart = useCallback((e) => {
-    e.preventDefault();
     const rect = joystickRef.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
@@ -108,7 +107,6 @@ export function MobileControls({ touchControls, setTouchControls, isFirstPerson,
   }, [setTouchControls]);
 
   const handleJoystickMove = useCallback((e) => {
-    e.preventDefault();
     const x = e.touches[0].clientX - joystickCenter.x;
     const y = e.touches[0].clientY - joystickCenter.y;
     
@@ -134,7 +132,6 @@ export function MobileControls({ touchControls, setTouchControls, isFirstPerson,
   }, [joystickCenter, setTouchControls]);
 
   const handleJoystickEnd = useCallback((e) => {
-    e.preventDefault();
     setJoystickPosition({ x: 0, y: 0 });
     setTouchControls(prev => ({
       ...prev,
@@ -142,6 +139,39 @@ export function MobileControls({ touchControls, setTouchControls, isFirstPerson,
     }));
     setIsTouching(false);
   }, [setTouchControls]);
+
+  // Add touch event listeners with proper options
+  useEffect(() => {
+    const joystick = joystickRef.current;
+    if (!joystick) return;
+
+    const options = { passive: false };
+
+    const startHandler = (e) => {
+      e.preventDefault();
+      handleJoystickStart(e);
+    };
+
+    const moveHandler = (e) => {
+      e.preventDefault();
+      handleJoystickMove(e);
+    };
+
+    const endHandler = (e) => {
+      e.preventDefault();
+      handleJoystickEnd(e);
+    };
+
+    joystick.addEventListener('touchstart', startHandler, options);
+    joystick.addEventListener('touchmove', moveHandler, options);
+    joystick.addEventListener('touchend', endHandler, options);
+
+    return () => {
+      joystick.removeEventListener('touchstart', startHandler, options);
+      joystick.removeEventListener('touchmove', moveHandler, options);
+      joystick.removeEventListener('touchend', endHandler, options);
+    };
+  }, [handleJoystickStart, handleJoystickMove, handleJoystickEnd]);
 
   const handleFirstPersonToggle = useCallback(() => {
     setIsFirstPerson(!isFirstPerson);
@@ -189,9 +219,6 @@ export function MobileControls({ touchControls, setTouchControls, isFirstPerson,
           ref={joystickRef}
           className="fixed bg-[#2a2a72] bg-opacity-80 rounded-full backdrop-blur-sm border-2 border-[#00c3ae] border-opacity-50 shadow-lg shadow-[#00c3ae]/20 transition-all duration-300 ease-out pointer-events-auto"
           style={styles.joystick}
-          onTouchStart={handleJoystickStart}
-          onTouchMove={handleJoystickMove}
-          onTouchEnd={handleJoystickEnd}
         >
           {/* Joystick background */}
           <div className="absolute inset-0 rounded-full bg-[#2a2a72] bg-opacity-50" />
