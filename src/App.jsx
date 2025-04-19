@@ -36,7 +36,7 @@ function App() {
   }, []);
 
   return (
-    <div className="w-full h-screen">
+    <div className="w-full h-screen select-none">
       <KeyboardControls map={keyMap}>
         <Canvas camera={{ 
           position: [21.2, 2.3, -38], 
@@ -46,7 +46,13 @@ function App() {
           <Scene touchControls={touchControls} setTouchControls={setTouchControls} />
         </Canvas>
       </KeyboardControls>
-      {isMobile && <MobileControls touchControls={touchControls} />}
+      {isMobile && (
+  <MobileControls
+    touchControls={touchControls}
+    setTouchControls={setTouchControls}
+  />
+)}
+
       
     </div>
   );
