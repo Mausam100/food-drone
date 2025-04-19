@@ -6,12 +6,11 @@ import Drone from "./Model/Drone";
 import * as THREE from "three";
 import GamePoints from "./GamePoints";
 
-function DroneController({ touchControls, setTouchControls }) {
+function DroneController({ touchControls, setTouchControls, isFirstPerson, setIsFirstPerson }) {
   const droneRef = useRef();
   const [subscribeKeys, getKeys] = useKeyboardControls();
   const { camera } = useThree();
   const [rotation, setRotation] = useState(0);
-  const [isFirstPerson, setIsFirstPerson] = useState(false);
   const [hasReachedEnd, setHasReachedEnd] = useState(false);
   const [hasReachedPoint1, setHasReachedPoint1] = useState(false);
   const [point1MessageShown, setPoint1MessageShown] = useState(false);
@@ -25,8 +24,6 @@ function DroneController({ touchControls, setTouchControls }) {
   const cameraTarget = useRef(new THREE.Vector3());
   const cameraPosition = useRef(new THREE.Vector3());
   const cameraLookAt = useRef(new THREE.Vector3());
-
-
 
   useEffect(() => {
     const handleTouchStart = (e) => {
@@ -135,6 +132,48 @@ function DroneController({ touchControls, setTouchControls }) {
 
     const euler = new THREE.Euler(0, rotation, 0);
     
+   if(touchControls) {
+ if (isFirstPerson) {
+      const firstPersonPos = firstPersonOffset.clone().applyEuler(euler);
+      cameraPosition.current.lerp(
+        new THREE.Vector3(
+          pos.x + firstPersonPos.x,
+          pos.y + firstPersonPos.y,
+          pos.z + firstPersonPos.z
+        ),
+        0.1
+      );
+      camera.position.copy(cameraPosition.current);
+      camera.rotation.set(0, rotation, 0);
+      const lookDirection = new THREE.Vector3(0, -1, -1).applyEuler(euler);
+      cameraLookAt.current.lerp(
+        new THREE.Vector3(
+          pos.x + lookDirection.x,
+          pos.y + lookDirection.y,
+          pos.z + lookDirection.z
+        ),
+        0.1
+      );
+      camera.lookAt(cameraLookAt.current);
+    } else {
+      const rotatedOffset = cameraOffset.clone().applyEuler(euler);
+      cameraTarget.current.lerp(
+        new THREE.Vector3(
+          pos.x + rotatedOffset.x,
+          pos.y + rotatedOffset.y,
+          pos.z + rotatedOffset.z
+        ),
+        0.05
+      );
+      cameraPosition.current.lerp(cameraTarget.current, 0.1);
+      camera.position.copy(cameraPosition.current);
+      cameraLookAt.current.lerp(
+        new THREE.Vector3(pos.x, pos.y, pos.z),
+        1
+      );
+      camera.lookAt(cameraLookAt.current);
+    }
+   }else{
     if (isFirstPerson) {
       const firstPersonPos = firstPersonOffset.clone().applyEuler(euler);
       cameraPosition.current.lerp(
@@ -175,7 +214,7 @@ function DroneController({ touchControls, setTouchControls }) {
       );
       camera.lookAt(cameraLookAt.current);
     }
-
+   }
     direction.set(0, 0, 0);
     const moveDirection = new THREE.Vector3(0, 0, -1).applyEuler(euler);
     
@@ -206,8 +245,8 @@ function DroneController({ touchControls, setTouchControls }) {
         const normalizedY = joystickY / magnitude;
         
         // Apply movement with smooth acceleration
-        const moveSpeed = 3;
-        const acceleration = 0.1;
+        const moveSpeed = 1;
+        const acceleration = 0.5;
         
         direction.add(moveDirection.clone().multiplyScalar(-normalizedY * moveSpeed * acceleration));
         direction.add(new THREE.Vector3(moveDirection.z, 0, -moveDirection.x).multiplyScalar(normalizedX * moveSpeed * acceleration));

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-export function MobileControls({ touchControls, setTouchControls }) {
+export function MobileControls({ touchControls, setTouchControls, isFirstPerson, setIsFirstPerson }) {
   const [showRotateOverlay, setShowRotateOverlay] = useState(false);
   const [joystickCenter, setJoystickCenter] = useState({ x: 0, y: 0 });
   const [joystickPosition, setJoystickPosition] = useState({ x: 0, y: 0 });
@@ -86,6 +86,10 @@ export function MobileControls({ touchControls, setTouchControls }) {
     }));
   };
 
+  const handleFirstPersonToggle = () => {
+    setIsFirstPerson(!isFirstPerson);
+  };
+
   return (
     <>
       {/* ROTATE PHONE OVERLAY */}
@@ -160,13 +164,12 @@ export function MobileControls({ touchControls, setTouchControls }) {
 
         {/* FIRST PERSON TOGGLE */}
         <button
-          className="pointer-events-auto fixed top-4 right-4 px-4 py-2 bg-[#00c3ae] text-white rounded-full shadow-md text-sm font-medium"
-          onClick={() => {
-            const keyboardEvent = new KeyboardEvent("keydown", { key: "f" });
-            window.dispatchEvent(keyboardEvent);
-          }}
+          className={`pointer-events-auto fixed top-4 right-4 px-4 py-2 ${
+            isFirstPerson ? 'bg-[#004a41]' : 'bg-[#00c3ae]'
+          } text-white rounded-full shadow-md text-sm font-medium transition-colors duration-200`}
+          onClick={handleFirstPersonToggle}
         >
-          🎥 FP
+          {isFirstPerson ? '🎥 FP ON' : '🎥 FP OFF'}
         </button>
       </div>
     </>

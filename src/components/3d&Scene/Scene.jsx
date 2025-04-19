@@ -6,7 +6,7 @@ import City from "./Model/City";
 import DroneController from "./DroneController";
 import GamePoints from "./GamePoints";
 
-export const Scene = ({ touchControls, setTouchControls }) => {
+export const Scene = ({ touchControls, setTouchControls, isFirstPerson, setIsFirstPerson }) => {
   return (
     <>
       <color attach="background" args={["#ffffff"]} />
@@ -33,7 +33,12 @@ export const Scene = ({ touchControls, setTouchControls }) => {
         <RigidBody type="fixed">
           <City />
         </RigidBody>
-        <DroneController touchControls={touchControls} setTouchControls={setTouchControls} />
+        <DroneController 
+          touchControls={touchControls} 
+          setTouchControls={setTouchControls}
+          isFirstPerson={isFirstPerson}
+          setIsFirstPerson={setIsFirstPerson}
+        />
         
         {/* Game Points */}
         <GamePoints.StartPoint position={[18, 3.2, -18]} />

@@ -18,6 +18,7 @@ const keyMap = [
 
 function App() {
   const [isMobile, setIsMobile] = useState(false);
+  const [isFirstPerson, setIsFirstPerson] = useState(false);
   const [touchControls, setTouchControls] = useState({
     joystick: { active: false, x: 0, y: 0 },
     rotateLeft: false,
@@ -43,17 +44,22 @@ function App() {
           fov: 30,
           near: 0.1,    
         }}>
-          <Scene touchControls={touchControls} setTouchControls={setTouchControls} />
+          <Scene 
+            touchControls={touchControls} 
+            setTouchControls={setTouchControls}
+            isFirstPerson={isFirstPerson}
+            setIsFirstPerson={setIsFirstPerson}
+          />
         </Canvas>
       </KeyboardControls>
       {isMobile && (
-  <MobileControls
-    touchControls={touchControls}
-    setTouchControls={setTouchControls}
-  />
-)}
-
-      
+        <MobileControls
+          touchControls={touchControls}
+          setTouchControls={setTouchControls}
+          isFirstPerson={isFirstPerson}
+          setIsFirstPerson={setIsFirstPerson}
+        />
+      )}
     </div>
   );
 }
