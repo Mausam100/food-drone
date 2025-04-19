@@ -52,6 +52,7 @@ function App() {
           />
         </Canvas>
       </KeyboardControls>
+      
       {isMobile && (
         <MobileControls
           touchControls={touchControls}
