@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import * as THREE from "three";
 import {
   GradientTexture,
@@ -30,7 +30,12 @@ export const Scene = ({
 
   const [dpr, setDpr] = useState(1);
   const [quality, setQuality] = useState(1);
+  const [randomNumber, setRandomNumber] = useState(0);
 
+  useEffect(() => {
+    setRandomNumber(Math.floor(Math.random() * 3));
+  }, []);
+  
   const skyboxGeometry = useMemo(
     () => new THREE.SphereGeometry(50, isMobile ? 16 : 32, isMobile ? 16 : 32),
     [isMobile]
@@ -44,6 +49,16 @@ export const Scene = ({
       }),
     []
   );
+ 
+  const RandomPoint1 = {
+    position: [[3.1, 5.7, -14.8], [6.7, 5.7, -14.8], [9,6.6,-9.5]],
+  }
+  const RandomPoint2 = {
+    position: [[-12, 6.7, -2.2], [-10.4, 6.7, 14.4], [-10.5, 6.7, -4]],
+  }
+  const RandomPoint3 = {
+      position: [[-17.3, 5.7, 12.8], [-18.7, 5.7, 14.8], [-18.7, 5.7, 12.8]],
+    }
 
   const physicsSettings = useMemo(
     () => ({
@@ -108,22 +123,26 @@ export const Scene = ({
           onPoint1Reached={onPoint1Reached}
           onPoint2Reached={onPoint2Reached}
           onPoint3Reached={onPoint3Reached}
+          randomNumber={randomNumber}
+          RandomPoint1={RandomPoint1}
+          RandomPoint2={RandomPoint2}
+          RandomPoint3={RandomPoint3}
         />
 
         {/* Game Points */}
     
         <GamePoints.CheckpointCylinder
-          position={[6.7, 5.7, -14.8]}
+          position={RandomPoint1.position[randomNumber]}
           height={5}
           radius={3}
         />
         <GamePoints.CheckpointCylinder
-          position={[0, 5, 0]}
+          position={RandomPoint2.position[randomNumber]}
           height={5}
           radius={3}
         />
         <GamePoints.CheckpointCylinder
-          position={[-10, 5, 5]}
+          position={RandomPoint3.position[randomNumber]}
           height={5}
           radius={3}
         />

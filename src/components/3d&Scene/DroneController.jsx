@@ -17,6 +17,10 @@ function DroneController({
   onPoint2Reached,
   onPoint3Reached,
   restartTrigger,
+  RandomPoint1,
+  RandomPoint2,
+  RandomPoint3,
+  randomNumber,
 }) {
   const droneRef = useRef();
   const [subscribeKeys, getKeys] = useKeyboardControls();
@@ -42,13 +46,26 @@ function DroneController({
       moveDirection: new THREE.Vector3(0, 0, -1),
       lookDirection: new THREE.Vector3(0, -1, -1),
       endPoint: new THREE.Vector3(-32.2, 2, 10),
-      point1: new THREE.Vector3(7, 6.1, -14.9),
-      point2: new THREE.Vector3(0, 5, 0),
-      point3: new THREE.Vector3(-10, 5, 5),
+      point1: new THREE.Vector3(
+        RandomPoint1.position[randomNumber][0],
+        RandomPoint1.position[randomNumber][1],
+        RandomPoint1.position[randomNumber][2]
+      ),
+      point2: new THREE.Vector3(
+        RandomPoint2.position[randomNumber][0],
+        RandomPoint2.position[randomNumber][1],
+        RandomPoint2.position[randomNumber][2]
+      ),
+      point3: new THREE.Vector3(
+        RandomPoint3.position[randomNumber][0],
+        RandomPoint3.position[randomNumber][1],
+        RandomPoint3.position[randomNumber][2]
+      ),
     }),
-    []
+    [randomNumber]
   );
-
+  // console.log(vectors.point1);
+ 
   const cameraTarget = useRef(new THREE.Vector3());
   const cameraPosition = useRef(new THREE.Vector3());
   const cameraLookAt = useRef(new THREE.Vector3());
