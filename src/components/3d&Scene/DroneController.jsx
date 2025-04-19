@@ -7,7 +7,7 @@ import Drone from "./Model/Drone";
 import * as THREE from "three";
 import GamePoints from "./GamePoints";
 
-function DroneController({ touchControls, setTouchControls, isFirstPerson, setIsFirstPerson }) {
+function DroneController({ touchControls, setTouchControls, isFirstPerson, setIsFirstPerson, onReachEnd, restartTrigger  }) {
   const droneRef = useRef();
   const [subscribeKeys, getKeys] = useKeyboardControls();
   const { camera } = useThree();
@@ -35,6 +35,20 @@ function DroneController({ touchControls, setTouchControls, isFirstPerson, setIs
   const cameraTarget = useRef(new THREE.Vector3());
   const cameraPosition = useRef(new THREE.Vector3());
   const cameraLookAt = useRef(new THREE.Vector3());
+
+  const resetDrone = () => {
+    setHasReachedEnd(false);
+    if (droneRef.current) {
+      droneRef.current.setTranslation({ x: 21.2, y: 3.3, z: -18 }, true);
+      droneRef.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
+    }
+  };
+
+  useEffect(() => {
+    if (restartTrigger) {
+      resetDrone();
+    }
+  }, [restartTrigger]);
 
   // Touch event handlers
   useEffect(() => {
@@ -127,20 +141,12 @@ function DroneController({ touchControls, setTouchControls, isFirstPerson, setIs
     const angle = Math.atan2(directionToEnd.x, directionToEnd.z);
     setArrowRotation(angle);
     
-    // Check if drone has reached the end point
-    if (!hasReachedEnd) {
+     // Check if drone has reached the end point
+     if (!hasReachedEnd) {
       const distance = dronePos.distanceTo(vectors.endPoint);
       if (distance < 2) {
         setHasReachedEnd(true);
-        alert("Congratulations! You've reached the end point! Opening reference website...");
-        window.location.href = 'http://localhost:5173/';
-      }
-    }
-    if (!hasReachedPoint1) {
-      const distance = dronePos.distanceTo(vectors.point1);
-      if (distance < 2 && !point1MessageShown) {
-        setPoint1MessageShown(true);
-        console.log("Congratulations! You've reached point 1!");
+        onReachEnd(); // Notify the parent component
       }
     }
 

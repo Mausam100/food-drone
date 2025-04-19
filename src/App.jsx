@@ -3,7 +3,7 @@ import { Canvas } from "@react-three/fiber";
 import { KeyboardControls } from "@react-three/drei";
 import { Scene } from "./components/3d&Scene/Scene";
 import { MobileControls } from "./components/3d&Scene/MobileControls";
-
+import EndOverlay from "./components/Home/EndOverlay";
 const keyMap = [
   { name: "forward", keys: ["w"] },
   { name: "backward", keys: ["s"] },
@@ -26,7 +26,16 @@ function App() {
     up: false,
     down: false
   });
+  const [showOverlay, setShowOverlay] = useState(false);
+  const [restartTrigger, setRestartTrigger] = useState(false);
+  const handleReachEnd = () => {
+    setShowOverlay(true);
+  };
 
+  const handleRestart = () => {
+    setShowOverlay(false);
+    setRestartTrigger((prev) => !prev); // Toggle restart trigger to reset the drone
+  };
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
@@ -49,6 +58,8 @@ function App() {
             setTouchControls={setTouchControls}
             isFirstPerson={isFirstPerson}
             setIsFirstPerson={setIsFirstPerson}
+            onReachEnd={handleReachEnd}
+            restartTrigger={restartTrigger}
           />
         </Canvas>
       </KeyboardControls>
@@ -61,6 +72,12 @@ function App() {
           setIsFirstPerson={setIsFirstPerson}
         />
       )}
+       {showOverlay && (
+          <EndOverlay
+            onRestart={handleRestart}
+            message="Congratulations! You've reached the end point!"
+          />
+        )}
     </div>
   );
 }

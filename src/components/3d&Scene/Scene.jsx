@@ -6,7 +6,7 @@ import City from "./Model/City";
 import DroneController from "./DroneController";
 import GamePoints from "./GamePoints";
 
-export const Scene = ({ touchControls, setTouchControls, isFirstPerson, setIsFirstPerson }) => {
+export const Scene = ({ touchControls, setTouchControls, isFirstPerson, setIsFirstPerson, onReachEnd, restartTrigger  }) => {
   // Check if device is mobile
   const isMobile = useMemo(() => {
     return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -83,6 +83,8 @@ export const Scene = ({ touchControls, setTouchControls, isFirstPerson, setIsFir
           setTouchControls={setTouchControls}
           isFirstPerson={isFirstPerson}
           setIsFirstPerson={setIsFirstPerson}
+          onReachEnd={onReachEnd}
+          restartTrigger={restartTrigger}
         />
         
         {/* Game Points */}
