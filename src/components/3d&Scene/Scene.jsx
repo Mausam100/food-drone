@@ -70,11 +70,14 @@ export const Scene = ({ touchControls, setTouchControls, isFirstPerson, setIsFir
         />
       </mesh>
 
-      {/* Physics World */}
-      <Physics gravity={[0, 0, 0]} colliders="trimesh" >
-        <RigidBody type="fixed">
-          <City />
-        </RigidBody>
+      {/* Physics World with mobile-optimized settings */}
+      <Physics {...physicsSettings}>
+        <Bounds fit clip observe margin={1.2}>
+          <RigidBody type="fixed" colliders="hull">
+            <City isMobile={isMobile} />
+          </RigidBody>
+        </Bounds>
+        
         <DroneController 
           touchControls={touchControls} 
           setTouchControls={setTouchControls}
