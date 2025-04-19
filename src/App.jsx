@@ -54,15 +54,15 @@ function App() {
   };
 
   const handlePoint1Reached = () => {
+    setPoint1Reached(true);
     setPoint2Reached(false);
     setPoint3Reached(false);
-    setPoint1Reached(true);
   };
 
   const handlePoint2Reached = () => {
     setPoint1Reached(false);
-    setPoint3Reached(false);
     setPoint2Reached(true);
+    setPoint3Reached(false);
   };
 
   const handlePoint3Reached = () => {
