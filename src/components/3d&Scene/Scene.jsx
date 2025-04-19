@@ -19,6 +19,9 @@ export const Scene = ({
   isFirstPerson,
   setIsFirstPerson,
   onReachEnd,
+  onPoint1Reached,
+  onPoint2Reached,
+  onPoint3Reached,
   restartTrigger,
 }) => {
   const isMobile = useMemo(() => {
@@ -29,8 +32,7 @@ export const Scene = ({
   const [quality, setQuality] = useState(1);
 
   const skyboxGeometry = useMemo(
-    () =>
-      new THREE.SphereGeometry(50, isMobile ? 16 : 32, isMobile ? 16 : 32),
+    () => new THREE.SphereGeometry(50, isMobile ? 16 : 32, isMobile ? 16 : 32),
     [isMobile]
   );
   const skyboxMaterial = useMemo(
@@ -103,14 +105,37 @@ export const Scene = ({
           setIsFirstPerson={setIsFirstPerson}
           onReachEnd={onReachEnd}
           restartTrigger={restartTrigger}
+          onPoint1Reached={onPoint1Reached}
+          onPoint2Reached={onPoint2Reached}
+          onPoint3Reached={onPoint3Reached}
         />
 
         {/* Game Points */}
-        <GamePoints.StartPoint position={[18, 3.2, -18]} height={5} radius={3} />
-        <GamePoints.CheckpointCylinder position={[6.7, 5.7, -14.8]} height={5} radius={3} />
-        <GamePoints.CheckpointCylinder position={[0, 5, 0]} height={5} radius={3} />
-        <GamePoints.CheckpointCylinder position={[-10, 5, 5]} height={5} radius={3} />
-        <GamePoints.EndPoint position={[-32.2, 2.1, 10]} height={5} radius={3} />
+        <GamePoints.StartPoint
+          position={[18, 3.2, -18]}
+          height={5}
+          radius={3}
+        />
+        <GamePoints.CheckpointCylinder
+          position={[6.7, 5.7, -14.8]}
+          height={5}
+          radius={3}
+        />
+        <GamePoints.CheckpointCylinder
+          position={[0, 5, 0]}
+          height={5}
+          radius={3}
+        />
+        <GamePoints.CheckpointCylinder
+          position={[-10, 5, 5]}
+          height={5}
+          radius={3}
+        />
+        <GamePoints.EndPoint
+          position={[-32.2, 2.1, 10]}
+          height={5}
+          radius={3}
+        />
       </Physics>
     </>
   );
