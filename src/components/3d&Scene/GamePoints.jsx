@@ -17,18 +17,22 @@ const StartPoint = ({ position, height = 5, radius = 2, color = "#00c3ae" }) => 
   );
 };
 
-const EndPoint = ({ position, height = 5, radius = 2, color = "#ff0000" }) => {
+const EndPoint = ({ position, color = "#ca0048" }) => {
   return (
-    <mesh position={position}>
-      <cylinderGeometry args={[radius, radius, height, 32]} />
-      <meshStandardMaterial
-        color={color}
-        transparent
-        opacity={0.3} // Adjust transparency
-        emissive={color} // Add glowing effect
-        emissiveIntensity={0.5} // Adjust glow intensity
-      />
-    </mesh>
+    <group position={position}>
+    {/* Outer floating ring */}
+    <mesh position={[0, 0, 0]} rotation={[0, -Math.PI / 4 , 0]}>
+        <torusGeometry args={[1.4, 0.15, 16, 72]} />
+        <meshPhongMaterial
+          color={color}
+          transparent
+          opacity={0.6}
+          emissive={"red"} 
+          emissiveIntensity={0.8}
+          shininess={1}
+        />
+     </mesh>
+</group>
   );
 };
 
@@ -47,8 +51,6 @@ const CheckpointCylinder = ({ position, height = 5, radius = 2, color = "#00adca
               shininess={1}
             />
          </mesh>
-
-        
    </group>
   );
 };

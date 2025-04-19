@@ -111,11 +111,7 @@ export const Scene = ({
         />
 
         {/* Game Points */}
-        <GamePoints.StartPoint
-          position={[18, 3.2, -18]}
-          height={5}
-          radius={3}
-        />
+    
         <GamePoints.CheckpointCylinder
           position={[6.7, 5.7, -14.8]}
           height={5}
