@@ -1,41 +1,56 @@
 import React from 'react';
 import * as THREE from 'three';
-import { RigidBody } from '@react-three/rapier';
-import { Text, Line } from '@react-three/drei';
+import { Text,  } from '@react-three/drei';
 
-const StartPoint = ({ position }) => {
+const StartPoint = ({ position, height = 5, radius = 2, color = "#00c3ae" }) => {
   return (
-    <mesh position={position} rotation={[-Math.PI / 2, 0, 0]}>
-      <cylinderGeometry args={[2, 2, 0.2, 32]} />
-      <meshStandardMaterial color="#00c3ae" transparent opacity={0.5} />
+    <mesh position={position}>
+      <cylinderGeometry args={[radius, radius, height, 32]} />
+      <meshStandardMaterial
+        color={color}
+        transparent
+        opacity={0.3} // Adjust transparency
+        emissive={color} // Add glowing effect
+        emissiveIntensity={0.5} // Adjust glow intensity
+      />
     </mesh>
   );
 };
 
-const EndPoint = ({ position }) => {
+const EndPoint = ({ position, height = 5, radius = 2, color = "#ff0000" }) => {
   return (
-    <mesh position={position} rotation={[-Math.PI / 2, 0, 0]}>
-      <cylinderGeometry args={[2, 2, 0.2, 32]} />
-      <meshStandardMaterial color="#ff0000" transparent opacity={0.5} />
+    <mesh position={position}>
+      <cylinderGeometry args={[radius, radius, height, 32]} />
+      <meshStandardMaterial
+        color={color}
+        transparent
+        opacity={0.3} // Adjust transparency
+        emissive={color} // Add glowing effect
+        emissiveIntensity={0.5} // Adjust glow intensity
+      />
     </mesh>
   );
 };
 
-const FollowPoint = ({ position }) => {
+const CheckpointCylinder = ({ position, height = 5, radius = 2, color = "#ffff00" }) => {
   return (
-      <Text position={position} fontSize={1} color="white" anchorX="center" anchorY="middle">
-        FOLLOW
-      </Text>
-    
+    <mesh position={position}>
+      <cylinderGeometry args={[radius, radius, height, 32]} />
+      <meshStandardMaterial
+        color={color}
+        transparent
+        opacity={0.3} // Adjust transparency
+        emissive={color} // Add glowing effect
+        emissiveIntensity={0.5} // Adjust glow intensity
+      />
+    </mesh>
   );
 };
+
 
 const DronePosition = ({ position, rotation, arrowRotation }) => {
   return (
     <group position={[0, 0, 0]}>
-  
-
-      {/* Back position text */}
       <Text
         rotation={[0, rotation + Math.PI, 0]}
         position={[0, 0.5, 0]}
@@ -52,35 +67,12 @@ const DronePosition = ({ position, rotation, arrowRotation }) => {
   );
 };
 
-const point1 = ({ position }) => {
-  return (
-    <Text position={position} rotation={[0, Math.PI / 2, 0]} fontSize={0.3} color="white" anchorX="center" anchorY="middle">
-      Point 1
-    </Text>
-  );
-};
-
-const PathLine = ({ points, color = "yellow" }) => {
-  const curve = new THREE.CatmullRomCurve3(points.map((p) => new THREE.Vector3(...p)));
-  const curvePoints = curve.getPoints(100); // Increase for smoother curves
-
-  return (
-    <Line
-      points={curvePoints} // Array of points
-      color={color} // Line color
-      lineWidth={10} // Line width
-      dashed={true} // Solid line
-    />
-  );
-};
 
 const GamePoints = {
   StartPoint,
-  EndPoint,
-  FollowPoint,  
+  EndPoint,  
   DronePosition,
-  point1,
-  PathLine
+  CheckpointCylinder
 };
 
 export default GamePoints;

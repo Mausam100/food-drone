@@ -57,15 +57,6 @@ export const Scene = ({
     [isMobile]
   );
 
-  // Define the points for the curved navigation path
-  const navigationPathPoints = [
-    [18, 3.2, -18], // Start point
-    [10, 5, -10], // Curve control point 1
-    [0, 4, 0], // Curve control point 2
-    [-20, 3, 5], // Curve control point 3
-    [-32.2, 2.1, 10], // End point
-  ];
-
   return (
     <>
       <PerformanceMonitor
@@ -115,9 +106,11 @@ export const Scene = ({
         />
 
         {/* Game Points */}
-        <GamePoints.StartPoint position={[18, 3.2, -18]} />
-        <GamePoints.EndPoint position={[-32.2, 2.1, 10]} />
-        <GamePoints.PathLine points={navigationPathPoints} color="yellow" />
+        <GamePoints.StartPoint position={[18, 3.2, -18]} height={5} radius={3} />
+        <GamePoints.CheckpointCylinder position={[6.7, 5.7, -14.8]} height={5} radius={3} />
+        <GamePoints.CheckpointCylinder position={[0, 5, 0]} height={5} radius={3} />
+        <GamePoints.CheckpointCylinder position={[-10, 5, 5]} height={5} radius={3} />
+        <GamePoints.EndPoint position={[-32.2, 2.1, 10]} height={5} radius={3} />
       </Physics>
     </>
   );
