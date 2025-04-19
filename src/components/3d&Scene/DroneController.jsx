@@ -183,8 +183,12 @@ function DroneController({ touchControls, setTouchControls }) {
     if (backward) direction.sub(moveDirection);
     if (left) direction.add(new THREE.Vector3(moveDirection.z, 0, -moveDirection.x));
     if (right) direction.add(new THREE.Vector3(-moveDirection.z, 0, moveDirection.x));
+    
+    // Handle vertical movement
     if (up) direction.y += 1;
     if (down) direction.y -= 1;
+    if (touchControls.up) direction.y += 1;
+    if (touchControls.down) direction.y -= 1;
 
     if (touchControls.joystick.active) {
       // Normalize joystick values to [-1, 1] range
