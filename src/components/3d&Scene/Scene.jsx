@@ -10,7 +10,7 @@ import {
 } from "@react-three/drei";
 import { Physics, RigidBody } from "@react-three/rapier";
 import City from "./Model/City";
-import DroneController from "./DroneController";
+import DroneController from "../controller/DroneController";
 import GamePoints from "./GamePoints";
 export const Scene = ({
   touchControls,

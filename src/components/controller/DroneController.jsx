@@ -2,10 +2,10 @@ import { useKeyboardControls } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { RigidBody, useRapier } from "@react-three/rapier";
 import { useEffect, useRef, useState, useMemo, useCallback } from "react";
-import Drone from "./Model/Drone";
+import Drone from "../3d&Scene/Model/Drone";
 
 import * as THREE from "three";
-import GamePoints from "./GamePoints";
+import GamePoints from "../3d&Scene/GamePoints";
 
 function DroneController({
   touchControls,

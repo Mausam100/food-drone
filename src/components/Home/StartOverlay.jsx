@@ -1,3 +1,5 @@
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 import React, { useEffect, useState } from "react";
 
 const StartOverlay = ({ onStart }) => {
@@ -27,29 +29,85 @@ const StartOverlay = ({ onStart }) => {
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
     };
   }, []);
+   
+  useGSAP(() => {
+    const tl = gsap.timeline();
+    tl.from(".NEXDROP",{
+      opacity: 0,
+      scale: 0,
+      duration: 1,
+      stagger: 0.2
+    })
+    tl.from(".NEXDROP_P p",{
+      opacity: 0,
+      scale: 0,
+      duration: 1,
+      stagger: 0.2
+    })
+  });
+
+  useGSAP(() => {
+    if (controlsStep === 1) {
+      const tl = gsap.timeline();
+      tl.from(".LEARNCONTROLS",{
+        opacity: 0,
+        scale: 0,
+        duration: 1,
+        stagger: 0.2
+      })
+      tl.from(".LEARNCONTROLS_P p",{
+        opacity: 0,
+        scale: 0,
+        duration: 1,
+        stagger: 0.2
+      })
+      tl.from(".LEARNCONTROLS_IMG",{
+        opacity: 0,
+        scale: 0,
+        duration: 1,
+        stagger: 0.2
+      })
+    }
+    if (controlsStep === 2) {
+      const tl = gsap.timeline();
+      tl.from(".MISSION_DELIVER_THE_PACKAGE",{
+        opacity: 0,
+        scale: 0,
+        duration: 1,
+        stagger: 0.2
+      })
+      tl.from(".MISSION_DELIVER_THE_PACKAGE_UL li",{
+        opacity: 0,
+        scale: 0,
+        duration: 1,
+        stagger: 0.2
+      })
+    }
+  }, [controlsStep]);
+
   if (controlsStep === 0) {
     return (
-      <div className="absolute w-full h-screen inset-0 bg-black/85 flex flex-col items-center justify-center z-50 text-white">
+      <div className="page-overlay1 absolute w-full h-screen inset-0 font-mono bg-black/85 flex flex-col items-center justify-center z-50 text-white">
         <div className="text-center mb-4">
-          <h1 className="text-2xl md:text-4xl font-bold mb-2">
+          <h1 className="text-2xl md:text-4xl font-bold mb-2 NEXDROP">
             WELCOME TO <span className="text-orange-500">NEXDROP</span>
           </h1>
         </div>
 
-        <div className="max-w-2xl text-center mb-12">
-          <p className="uppercase text-lg md:text-xl tracking-wide leading-relaxed">
-            STEP INTO THE PILOT'S SEAT
-            <br />
-            OF YOUR OWN DELIVERY
-            <br />
-            DRONE. EXPLORE AN OPEN
-            <br />
-            WORLD, COMPLETE MISSIONS,
-            <br />
-            AND EXPERIENCE THE FUTURE
-            <br />
-            OF DELIVERY TODAY.
-          </p>
+        <div className="max-w-2xl text-center mb-12 ">
+          <div className="NEXDROP_P uppercase text-lg md:text-xl tracking-wide leading-relaxed">
+            <p>STEP INTO THE PILOT'S SEAT</p>
+          
+            <p>OF YOUR OWN DELIVERY</p>
+          
+            <p>DRONE. EXPLORE AN OPEN</p>
+          
+            <p>WORLD, COMPLETE MISSIONS,</p>
+       
+            <p>AND EXPERIENCE THE FUTURE</p>
+
+            <p>OF DELIVERY TODAY.</p>
+          </div>
         </div>
 
         <div className="flex gap-6">
@@ -64,16 +122,7 @@ const StartOverlay = ({ onStart }) => {
             </h2>
           </div>
 
-          <div
-            className="relative cursor-pointer"
-            typeof="button"
-            onClick={onStart}
-          >
-            <img src="/button.svg" width={220} />
-            <h2 className="w-full text-center absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]">
-              FLY DRONE
-            </h2>
-          </div>
+        
         </div>
       </div>
     );
@@ -82,28 +131,28 @@ const StartOverlay = ({ onStart }) => {
     return (
       <div className="absolute inset-0 bg-black/85 flex flex-col items-center justify-center z-50 text-white">
         <div className="text-center mb-6">
-          <h1 className="text-2xl md:text-4xl font-bold mb-4">
+          <h1 className="text-2xl md:text-4xl font-bold mb-4 LEARNCONTROLS">
             CONTROLS TO FLY <span className="text-orange-500">DRONE</span>
           </h1>
         </div>
 
         <div className="max-w-2xl text-center mb-8">
-          <p className="uppercase text-lg tracking-wide leading-relaxed mb-8">
-            USE W,A,S,D TO MOVE THE DRONE AND ARROW
-            <br />
-            KEYS TO CONTROL CAMERA DIRECTION.
-            <br />
-            FORWARD, BACKWARD, LEFT, RIGHT, SPACE TO
-            <br />
-            CONTROL CAMERA VIEW.
-          </p>
+          <div className="uppercase text-lg tracking-wide leading-relaxed mb-8 LEARNCONTROLS_P">
+           <p>USE W,A,S,D TO MOVE THE DRONE AND ARROW</p>
+            
+            <p>KEYS TO CONTROL CAMERA DIRECTION.</p>
+            
+            <p>FORWARD, BACKWARD, LEFT, RIGHT, SPACE TO</p>
+    
+            <p>CONTROL CAMERA VIEW.</p>
+          </div>
         </div>
 
         <div className="w-full flex justify-around items-center">
           <img
-            src="/wasd-controls.png"
+            src="/showcontrolsStep.svg"
             alt="WASD Controls"
-            className="w-[25%] h-auto"
+            className="w-[25%] h-auto LEARNCONTROLS_IMG"
           />
           <div
             className="relative cursor-pointer"
@@ -116,9 +165,9 @@ const StartOverlay = ({ onStart }) => {
             </h2>
           </div>
           <img
-            src="/arrow-controls.png"
+            src="/arrow-controls.svg"
             alt="Arrow Controls"
-            className="w-[25%] h-auto"
+            className="w-[25%] h-auto LEARNCONTROLS_IMG"
           />
         </div>
       </div>
@@ -129,13 +178,13 @@ const StartOverlay = ({ onStart }) => {
     return (
       <div className="absolute inset-0 bg-black/85 flex flex-col items-center justify-center z-50 text-white">
         <div className="text-center mb-6">
-          <h1 className="text-2xl md:text-4xl font-bold mb-4">
+          <h1 className="text-2xl md:text-4xl font-bold mb-4 MISSION_DELIVER_THE_PACKAGE">
             <span className="text-orange-500">MISSION</span> DELIVER THE PACKAGE
           </h1>
         </div>
 
         <div className="max-w-2xl text-center mb-12">
-          <ul className="uppercase text-lg tracking-wide leading-relaxed space-y-6">
+          <ul className="uppercase text-lg tracking-wide leading-relaxed space-y-6 MISSION_DELIVER_THE_PACKAGE_UL">
             <li>• FLY THROUGH EACH GLOWING CHECKPOINT.</li>
             <li>
               • STAY ON THE PATH TO REACH{" "}

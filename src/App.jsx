@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { KeyboardControls } from "@react-three/drei";
 import { Scene } from "./components/3d&Scene/Scene";
-import { MobileControls } from "./components/3d&Scene/MobileControls"; // Mobile controls
+import { MobileControls } from "./components/controller/MobileControls"; // Mobile controls
 import EndOverlay from "./components/Home/EndOverlay"; // End overlay
 import StartOverlay from "./components/Home/StartOverlay"; // Start overlay
 import PointOverlay from "./components/Home/PointOverlay"; // Point overlay
@@ -22,6 +22,7 @@ const keyMap = [
 ];
 
 function App() {
+  const [loading, setLoading] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isFirstPerson, setIsFirstPerson] = useState(false);
   const [touchControls, setTouchControls] = useState({
@@ -65,7 +66,7 @@ function App() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  return (
+  return loading ? (
     <div className="w-full h-screen select-none">
       <KeyboardControls map={keyMap}>
         <Canvas
@@ -100,7 +101,7 @@ function App() {
           setIsFirstPerson={setIsFirstPerson}
         />
       )}
-      {showStartOverlay && <StartOverlay onStart={() => handleStart(setShowStartOverlay)} />}
+      {/* {showStartOverlay && <StartOverlay onStart={() => handleStart(setShowStartOverlay)} />} */}
       {showEndOverlay && (
         <EndOverlay
           onRestart={() => handleRestart(setShowEndOverlay, setRestartTrigger, setShowStartOverlay)}
@@ -122,6 +123,10 @@ function App() {
       {point3Reached && (
         <PointOverlay heading={"Point 3"} onClose={() => handlePointClose(setPoint1Reached, setPoint2Reached, setPoint3Reached)} />
       )}
+    </div>
+  ) : (
+    <div className="w-full h-screen select-none">
+      <StartOverlay onStart={() => setLoading(true)} />
     </div>
   );
 }
