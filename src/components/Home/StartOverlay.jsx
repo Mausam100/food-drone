@@ -1,10 +1,12 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 const StartOverlay = ({ onStart }) => {
   const [controlsStep, setControlsStep] = useState(0);
   const [fullScreen, setFullScreen] = useState(false);
+  const [showRotateOverlay, setShowRotateOverlay] = useState(false);
+  const touchTimeout = useRef(null);
 
   const handleLearnControls = () => {
     setControlsStep(1);
@@ -19,6 +21,22 @@ const StartOverlay = ({ onStart }) => {
     onStart();
   };
 
+  const toggleFullScreen = async () => {
+    if (!document.fullscreenElement) {
+      await document.documentElement.requestFullscreen();
+    } else {
+      await document.exitFullscreen();
+    }
+  };
+
+  const lockOrientation = async () => {
+    try {
+      await screen.orientation.lock("landscape");
+    } catch (error) {
+      console.error("Orientation lock failed:", error);
+    }
+  };
+
   useEffect(() => {
     const handleFullscreenChange = () => {
       setFullScreen(!!document.fullscreenElement);
@@ -27,6 +45,30 @@ const StartOverlay = ({ onStart }) => {
     document.addEventListener("fullscreenchange", handleFullscreenChange);
     return () => {
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    const checkOrientation = () => {
+      if (touchTimeout.current) {
+        clearTimeout(touchTimeout.current);
+      }
+      touchTimeout.current = setTimeout(() => {
+        const isPortrait = window.matchMedia("(orientation: portrait)").matches;
+        setShowRotateOverlay(isPortrait);
+      }, 100);
+    };
+
+    checkOrientation();
+    window.addEventListener("orientationchange", checkOrientation);
+    window.addEventListener("resize", checkOrientation);
+
+    return () => {
+      window.removeEventListener("orientationchange", checkOrientation);
+      window.removeEventListener("resize", checkOrientation);
+      if (touchTimeout.current) {
+        clearTimeout(touchTimeout.current);
+      }
     };
   }, []);
 
@@ -85,9 +127,29 @@ const StartOverlay = ({ onStart }) => {
     }
   }, [controlsStep]);
 
+  if (showRotateOverlay) {
+    return (
+      <div className="fixed inset-0 z-[2000] bg-black bg-opacity-90 text-white flex items-center justify-center text-center text-xl font-semibold p-4 pointer-events-auto">
+        <div className="animate-pulse">
+          <p>🔄</p>
+          <p>📱 Please rotate your phone to landscape</p>
+          <button
+            onClick={() => {
+              toggleFullScreen();
+              lockOrientation();
+            }}
+            className="mt-4 px-6 py-2 bg-[#00c3ae] rounded-lg text-white font-medium hover:bg-[#004a41] transition-colors"
+          >
+            Enter Fullscreen
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   if (controlsStep === 0) {
     return (
-      <div className="page-overlay1 absolute w-full h-screen inset-0 font-mono bg-black/85 flex flex-col items-center justify-center z-50 text-white">
+      <div className="page-overlay1 absolute w-full h-screen inset-0 p-6 font-mono bg-black/85 flex flex-col items-center justify-center z-50 text-white">
         <div className="text-center mb-4">
           <h1 className="text-2xl md:text-4xl font-bold mb-2 NEXDROP">
             WELCOME TO <span className="text-orange-500">NEXDROP</span>
@@ -128,7 +190,7 @@ const StartOverlay = ({ onStart }) => {
   if (controlsStep === 1) {
     return (
       <div className="absolute inset-0 bg-black/85 flex flex-col items-center justify-center z-50 text-white">
-        <div className="text-center mb-6">
+        <div className="text-center mb-4">
           <h1 className="text-2xl md:text-4xl font-bold mb-4 LEARNCONTROLS">
             CONTROLS TO FLY <span className="text-orange-500">DRONE</span>
           </h1>
@@ -152,8 +214,13 @@ const StartOverlay = ({ onStart }) => {
             alt="WASD Controls"
             className="w-[25%] h-auto LEARNCONTROLS_IMG"
           />
+          <img
+            src="/f_key.svg"
+            alt="WASD Controls"
+            className="w-[10%] absolute top-[70%] left-[50%] -translate-x-[50%] -translate-y-[50%] LEARNCONTROLS_IMG"
+          />
           <div
-            className="relative cursor-pointer"
+            className="relative cursor-pointer lg:-bottom-30"
             typeof="button"
             onClick={handleContinue}
           >
