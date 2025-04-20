@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { KeyboardControls } from "@react-three/drei";
 import { Scene } from "./components/3d&Scene/Scene";
-import { MobileControls } from "./components/3d&Scene/MobileControls";
-import EndOverlay from "./components/Home/EndOverlay";
-import StartOverlay from "./components/Home/StartOverlay";
-import PointOverlay from "./components/Home/PointOverlay";
+import { MobileControls } from "./components/3d&Scene/MobileControls"; // Mobile controls
+import EndOverlay from "./components/Home/EndOverlay"; // End overlay
+import StartOverlay from "./components/Home/StartOverlay"; // Start overlay
+import PointOverlay from "./components/Home/PointOverlay"; // Point overlay
+import { handleStart, handleReachEnd, handlePoint1Reached, handlePoint2Reached, handlePoint3Reached, handleRestart, handlePointClose } from "./utils/allFun"; // Game controls
 
+// Game controls
 const keyMap = [
   { name: "forward", keys: ["w"] },
   { name: "backward", keys: ["s"] },
@@ -34,6 +36,7 @@ function App() {
   const [point3Reached, setPoint3Reached] = useState(false);
   const [showStartOverlay, setShowStartOverlay] = useState(true);
   const [showEndOverlay, setShowEndOverlay] = useState(false);
+  const [showCheckpointsCleared, setShowCheckpointsCleared] = useState(false);
   const [restartTrigger, setRestartTrigger] = useState(false);
 
   // Handle fullscreen functionality
@@ -52,78 +55,6 @@ function App() {
     };
   }, []);
 
-  const handleStart = () => {
-    setShowStartOverlay(false);
-    // Request fullscreen when game starts
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(err => {
-        console.error(`Error attempting to enable fullscreen: ${err.message}`);
-      });
-    }
-  };
-
-  const handleReachEnd = () => {
-    setPoint1Reached(false);
-    setPoint2Reached(false);
-    setPoint3Reached(false);
-    setShowEndOverlay(true);
-  };
-
-  const handleRestart = () => {
-    setShowEndOverlay(false);
-    setRestartTrigger((prev) => !prev); // Toggle restart trigger to reset the drone
-    setShowStartOverlay(true); // Show the start overlay again
-  };
-
-  const handlePoint1Reached = () => {
-    setPoint1Reached(true);
-    setPoint2Reached(false);
-    setPoint3Reached(false);
-  };
-
-  const handlePoint2Reached = () => {
-    setPoint1Reached(false);
-    setPoint2Reached(true);
-    setPoint3Reached(false);
-  };
-
-  const handlePoint3Reached = () => {
-    setPoint1Reached(false);
-    setPoint2Reached(false);
-    setPoint3Reached(true);
-  };
-
-  useEffect(() => {
-    if (!point1Reached) return;
-    let tm;
-    if (point1Reached) {
-      tm = setTimeout(() => {
-        setPoint1Reached(false);
-      }, 20000);
-    }
-    return () => clearTimeout(tm);
-  }, [point1Reached]);
-
-  useEffect(() => {
-    if (!point2Reached) return;
-    let tm;
-    if (point2Reached) {
-      tm = setTimeout(() => {
-        setPoint2Reached(false);
-      }, 20000);
-    }
-    return () => clearTimeout(tm);
-  }, [point2Reached]);
-  useEffect(() => {
-    if (!point3Reached) return;
-    let tm;
-    if (point3Reached) {
-      tm = setTimeout(() => {
-        setPoint3Reached(false);
-      }, 20000);
-    }
-    return () => clearTimeout(tm);
-  }, [point3Reached]);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -133,12 +64,6 @@ function App() {
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
-
-  const handlePointClose = () => {
-    setPoint1Reached(false);
-    setPoint2Reached(false);
-    setPoint3Reached(false);
-  };
 
   return (
     <div className="w-full h-screen select-none">
@@ -155,11 +80,15 @@ function App() {
             setTouchControls={setTouchControls}
             isFirstPerson={isFirstPerson}
             setIsFirstPerson={setIsFirstPerson}
-            onReachEnd={handleReachEnd}
-            onPoint1Reached={handlePoint1Reached}
-            onPoint2Reached={handlePoint2Reached}
-            onPoint3Reached={handlePoint3Reached}
+            onReachEnd={() => handleReachEnd(setPoint1Reached, setPoint2Reached, setPoint3Reached, setShowEndOverlay)}
+            onPoint1Reached={() => handlePoint1Reached(setPoint1Reached, setPoint2Reached, setPoint3Reached)}
+            onPoint2Reached={() => handlePoint2Reached(setPoint1Reached, setPoint2Reached, setPoint3Reached)}
+            onPoint3Reached={() => handlePoint3Reached(setPoint1Reached, setPoint2Reached, setPoint3Reached)}
             restartTrigger={restartTrigger}
+            setShowCheckpointsCleared={setShowCheckpointsCleared}
+            point1Reached={point1Reached}
+            point2Reached={point2Reached}
+            point3Reached={point3Reached}
           />
         </Canvas>
       </KeyboardControls>
@@ -171,21 +100,27 @@ function App() {
           setIsFirstPerson={setIsFirstPerson}
         />
       )}
-      {showStartOverlay && <StartOverlay onStart={handleStart} />}
+      {showStartOverlay && <StartOverlay onStart={() => handleStart(setShowStartOverlay)} />}
       {showEndOverlay && (
         <EndOverlay
-          onRestart={handleRestart}
+          onRestart={() => handleRestart(setShowEndOverlay, setRestartTrigger, setShowStartOverlay)}
           message="Congratulations! You've reached the end point!"
         />
       )}
+      {showCheckpointsCleared && (
+        <PointOverlay 
+          heading="Checkpoints Cleared" 
+          onClose={() => setShowCheckpointsCleared(false)}
+        />
+      )}
       {point1Reached && (
-        <PointOverlay heading={"Point 1"} onClose={handlePointClose} />
+        <PointOverlay heading={"Point 1"} onClose={() => handlePointClose(setPoint1Reached, setPoint2Reached, setPoint3Reached)} />
       )}
       {point2Reached && (
-        <PointOverlay heading={"Point 2"} onClose={handlePointClose} />
+        <PointOverlay heading={"Point 2"} onClose={() => handlePointClose(setPoint1Reached, setPoint2Reached, setPoint3Reached)} />
       )}
       {point3Reached && (
-        <PointOverlay heading={"Point 3"} onClose={handlePointClose} />
+        <PointOverlay heading={"Point 3"} onClose={() => handlePointClose(setPoint1Reached, setPoint2Reached, setPoint3Reached)} />
       )}
     </div>
   );

@@ -19,6 +19,7 @@ function DroneController({
   restartTrigger,
   randomPoints,
   randomNumber,
+  setShowCheckpointsCleared
 }) {
   const droneRef = useRef();
   const [subscribeKeys, getKeys] = useKeyboardControls();
@@ -28,7 +29,6 @@ function DroneController({
   const [hasReachedPoint1, setHasReachedPoint1] = useState(false);
   const [hasReachedPoint2, setHasReachedPoint2] = useState(false);
   const [hasReachedPoint3, setHasReachedPoint3] = useState(false);
-  const [point1MessageShown, setPoint1MessageShown] = useState(false);
   const lastFirstPersonToggle = useRef(false);
   const [dronePosition, setDronePosition] = useState([21.2, 3.3, -18]);
   const [direction, setDirection] = useState([0, 0, -1]);
@@ -43,7 +43,7 @@ function DroneController({
   const [speed, setSpeed] = useState(isMobile ? 2 : 5); // Base speed
   const maxSpeed = isMobile ? 4 : 10; // Maximum speed
   const minSpeed = isMobile ? 0.5 : 1; // Minimum speed
-  const speedIncrement = isMobile ? 0.05 : 0.1; // Speed change rate
+  const speedIncrement = isMobile ? 0.2 : 0.1; // Speed change rate
 
   // Memoize vectors to avoid recreating them every frame
   const vectors = useMemo(
@@ -97,7 +97,9 @@ function DroneController({
       checkPoint(dronePos, vectors.point3, hasReachedPoint3, setHasReachedPoint3, onPoint3Reached);
     }
     if (!hasReachedEnd) {
-      checkPoint(dronePos, vectors.endPoint, hasReachedEnd, setHasReachedEnd, onReachEnd);
+      if(hasReachedPoint1 && hasReachedPoint2 && hasReachedPoint3){
+        checkPoint(dronePos, vectors.endPoint, hasReachedEnd, setHasReachedEnd, onReachEnd);
+      }
     }
   }, [
     hasReachedPoint1,
@@ -109,7 +111,8 @@ function DroneController({
     onPoint1Reached,
     onPoint2Reached,
     onPoint3Reached,
-    onReachEnd
+    onReachEnd,
+    setShowCheckpointsCleared
   ]);
 
   // Memoize camera movement logic
@@ -377,6 +380,7 @@ function DroneController({
           position={dronePosition}
         />
       </group>
+      
       {/* Direction Arrow */}
     </RigidBody>
   );

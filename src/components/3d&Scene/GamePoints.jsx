@@ -1,5 +1,4 @@
 import React from 'react';
-import * as THREE from 'three';
 import { Text,  } from '@react-three/drei';
 
 const StartPoint = ({ position, height = 5, radius = 2, color = "#00c3ae" }) => {
@@ -21,7 +20,7 @@ const EndPoint = ({ position, color = "#ca0048" }) => {
   return (
     <group position={position}>
     {/* Outer floating ring */}
-    <mesh position={[0, 0, 0]} rotation={[0, -Math.PI / 4 , 0]}>
+    <mesh position={[0, 0, 0]} rotation={[0, -Math.PI / 2 , 0]}>
         <torusGeometry args={[1.4, 0.15, 16, 72]} />
         <meshPhongMaterial
           color={color}
@@ -45,10 +44,11 @@ const CheckpointCylinder = ({ position, height = 5, radius = 2, color = "#00adca
             <meshPhongMaterial
               color={color}
               transparent
-              opacity={0.6}
+              opacity={0.9}
               emissive={color} 
               emissiveIntensity={0.8}
               shininess={1}
+              
             />
          </mesh>
    </group>

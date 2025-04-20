@@ -12,22 +12,25 @@ import { Physics, RigidBody } from "@react-three/rapier";
 import City from "./Model/City";
 import DroneController from "./DroneController";
 import GamePoints from "./GamePoints";
-
 export const Scene = ({
   touchControls,
   setTouchControls,
   isFirstPerson,
   setIsFirstPerson,
+  restartTrigger,
+  setShowCheckpointsCleared,
+  point1Reached,
+  point2Reached,
+  point3Reached,
   onReachEnd,
   onPoint1Reached,
   onPoint2Reached,
   onPoint3Reached,
-  restartTrigger,
 }) => {
   const isMobile = useMemo(() => {
     return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   }, []);
-
+  
   const [dpr, setDpr] = useState(1);
   const [quality, setQuality] = useState(1);
   const [randomNumber, setRandomNumber] = useState(0);
@@ -89,7 +92,7 @@ export const Scene = ({
       />
 
       <color attach="background" args={["#ffffff"]} />
-      <fog attach="fog" args={["#ffffff", 10, 100]} />
+      <fog attach="fog" color="#ffffff" near={1} far={100} />
       <ambientLight intensity={1} />
       <directionalLight position={[10, 10, 5]} intensity={1} />
       <Environment preset="city" />
@@ -123,12 +126,13 @@ export const Scene = ({
           isFirstPerson={isFirstPerson}
           setIsFirstPerson={setIsFirstPerson}
           onReachEnd={onReachEnd}
-          restartTrigger={restartTrigger}
           onPoint1Reached={onPoint1Reached}
           onPoint2Reached={onPoint2Reached}
           onPoint3Reached={onPoint3Reached}
+          restartTrigger={restartTrigger}
           randomPoints={randomPoints}
           randomNumber={randomNumber}
+          setShowCheckpointsCleared={setShowCheckpointsCleared}
         />
 
         {/* Game Points */}
@@ -136,16 +140,19 @@ export const Scene = ({
           position={randomPoints.point1.position[randomNumber]}
           height={5}
           radius={3}
+          color={point1Reached ? "#00ff00" : "#00adca"}
         />
         <GamePoints.CheckpointCylinder
           position={randomPoints.point2.position[randomNumber]}
           height={5}
           radius={3}
+          color={point2Reached ? "#00ff00" : "#00adca"}
         />
         <GamePoints.CheckpointCylinder
           position={randomPoints.point3.position[randomNumber]}
           height={5}
           radius={3}
+          color={point3Reached ? "#00ff00" : "#00adca"}
         />
         <GamePoints.EndPoint
           position={[-32.2, 2.1, 10]}
