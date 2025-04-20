@@ -29,59 +29,59 @@ const StartOverlay = ({ onStart }) => {
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
     };
   }, []);
-   
+
   useGSAP(() => {
     const tl = gsap.timeline();
-    tl.from(".NEXDROP",{
+    tl.from(".NEXDROP", {
       opacity: 0,
       scale: 0,
       duration: 1,
-      stagger: 0.2
-    })
-    tl.from(".NEXDROP_P p",{
+      stagger: 0.2,
+    });
+    tl.from(".NEXDROP_P p", {
       opacity: 0,
       scale: 0,
       duration: 1,
-      stagger: 0.2
-    })
+      stagger: 0.2,
+    });
   });
 
   useGSAP(() => {
     if (controlsStep === 1) {
       const tl = gsap.timeline();
-      tl.from(".LEARNCONTROLS",{
+      tl.from(".LEARNCONTROLS", {
         opacity: 0,
         scale: 0,
         duration: 1,
-        stagger: 0.2
-      })
-      tl.from(".LEARNCONTROLS_P p",{
+        stagger: 0.2,
+      });
+      tl.from(".LEARNCONTROLS_P p", {
         opacity: 0,
         scale: 0,
         duration: 1,
-        stagger: 0.2
-      })
-      tl.from(".LEARNCONTROLS_IMG",{
+        stagger: 0.2,
+      });
+      tl.from(".LEARNCONTROLS_IMG", {
         opacity: 0,
         scale: 0,
         duration: 1,
-        stagger: 0.2
-      })
+        stagger: 0.2,
+      });
     }
     if (controlsStep === 2) {
       const tl = gsap.timeline();
-      tl.from(".MISSION_DELIVER_THE_PACKAGE",{
+      tl.from(".MISSION_DELIVER_THE_PACKAGE", {
         opacity: 0,
         scale: 0,
         duration: 1,
-        stagger: 0.2
-      })
-      tl.from(".MISSION_DELIVER_THE_PACKAGE_UL li",{
+        stagger: 0.2,
+      });
+      tl.from(".MISSION_DELIVER_THE_PACKAGE_UL li", {
         opacity: 0,
         scale: 0,
         duration: 1,
-        stagger: 0.2
-      })
+        stagger: 0.2,
+      });
     }
   }, [controlsStep]);
 
@@ -97,13 +97,13 @@ const StartOverlay = ({ onStart }) => {
         <div className="max-w-2xl text-center mb-12 ">
           <div className="NEXDROP_P uppercase text-lg md:text-xl tracking-wide leading-relaxed">
             <p>STEP INTO THE PILOT'S SEAT</p>
-          
+
             <p>OF YOUR OWN DELIVERY</p>
-          
+
             <p>DRONE. EXPLORE AN OPEN</p>
-          
+
             <p>WORLD, COMPLETE MISSIONS,</p>
-       
+
             <p>AND EXPERIENCE THE FUTURE</p>
 
             <p>OF DELIVERY TODAY.</p>
@@ -121,8 +121,6 @@ const StartOverlay = ({ onStart }) => {
               LEARN CONTROLS
             </h2>
           </div>
-
-        
         </div>
       </div>
     );
@@ -138,12 +136,12 @@ const StartOverlay = ({ onStart }) => {
 
         <div className="max-w-2xl text-center mb-8">
           <div className="uppercase text-lg tracking-wide leading-relaxed mb-8 LEARNCONTROLS_P">
-           <p>USE W,A,S,D TO MOVE THE DRONE AND ARROW</p>
-            
+            <p>USE W,A,S,D TO MOVE THE DRONE AND ARROW</p>
+
             <p>KEYS TO CONTROL CAMERA DIRECTION.</p>
-            
+
             <p>FORWARD, BACKWARD, LEFT, RIGHT, SPACE TO</p>
-    
+
             <p>CONTROL CAMERA VIEW.</p>
           </div>
         </div>

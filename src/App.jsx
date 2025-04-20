@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
-import { KeyboardControls } from "@react-three/drei";
+import { KeyboardControls, PerformanceMonitor, Preload } from "@react-three/drei";
 import { Scene } from "./components/3d&Scene/Scene";
 import { MobileControls } from "./components/controller/MobileControls"; // Mobile controls
 import EndOverlay from "./components/Home/EndOverlay"; // End overlay
 import StartOverlay from "./components/Home/StartOverlay"; // Start overlay
 import PointOverlay from "./components/Home/PointOverlay"; // Point overlay
-import { handleStart, handleReachEnd, handlePoint1Reached, handlePoint2Reached, handlePoint3Reached, handleRestart, handlePointClose } from "./utils/allFun"; // Game controls
+import { handleReachEnd, handlePoint1Reached, handlePoint2Reached, handlePoint3Reached, handleRestart, handlePointClose } from "./utils/allFun"; // Game controls
 
 // Game controls
 const keyMap = [
@@ -39,6 +39,7 @@ function App() {
   const [showEndOverlay, setShowEndOverlay] = useState(false);
   const [showCheckpointsCleared, setShowCheckpointsCleared] = useState(false);
   const [restartTrigger, setRestartTrigger] = useState(false);
+  const [dpr, setDpr] = useState(2);
 
   // Handle fullscreen functionality
   useEffect(() => {
@@ -70,27 +71,32 @@ function App() {
     <div className="w-full h-screen select-none">
       <KeyboardControls map={keyMap}>
         <Canvas
+          dpr={dpr}
           camera={{
             position: [21.2, 2.3, -38],
             fov: 30,
             near: 0.1,
           }}
         >
-          <Scene
-            touchControls={touchControls}
-            setTouchControls={setTouchControls}
-            isFirstPerson={isFirstPerson}
-            setIsFirstPerson={setIsFirstPerson}
-            onReachEnd={() => handleReachEnd(setPoint1Reached, setPoint2Reached, setPoint3Reached, setShowEndOverlay)}
-            onPoint1Reached={() => handlePoint1Reached(setPoint1Reached, setPoint2Reached, setPoint3Reached)}
-            onPoint2Reached={() => handlePoint2Reached(setPoint1Reached, setPoint2Reached, setPoint3Reached)}
-            onPoint3Reached={() => handlePoint3Reached(setPoint1Reached, setPoint2Reached, setPoint3Reached)}
-            restartTrigger={restartTrigger}
-            setShowCheckpointsCleared={setShowCheckpointsCleared}
-            point1Reached={point1Reached}
-            point2Reached={point2Reached}
-            point3Reached={point3Reached}
-          />
+          <PerformanceMonitor factor={1} onChange={({ factor }) => setDpr(Math.floor(0.5 + 1.5 * factor, 1))} />
+          <Suspense fallback={null}>
+            <Scene
+              touchControls={touchControls}
+              setTouchControls={setTouchControls}
+              isFirstPerson={isFirstPerson}
+              setIsFirstPerson={setIsFirstPerson}
+              onReachEnd={() => handleReachEnd(setPoint1Reached, setPoint2Reached, setPoint3Reached, setShowEndOverlay)}
+              onPoint1Reached={() => handlePoint1Reached(setPoint1Reached, setPoint2Reached, setPoint3Reached)}
+              onPoint2Reached={() => handlePoint2Reached(setPoint1Reached, setPoint2Reached, setPoint3Reached)}
+              onPoint3Reached={() => handlePoint3Reached(setPoint1Reached, setPoint2Reached, setPoint3Reached)}
+              restartTrigger={restartTrigger}
+              setShowCheckpointsCleared={setShowCheckpointsCleared}
+              point1Reached={point1Reached}
+              point2Reached={point2Reached}
+              point3Reached={point3Reached}
+            />
+            <Preload all />
+          </Suspense>
         </Canvas>
       </KeyboardControls>
       {isMobile && (
