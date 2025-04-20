@@ -240,6 +240,7 @@ export function MobileControls({ touchControls, setTouchControls, isFirstPerson,
       {showRotateOverlay && (
         <div className="fixed inset-0 z-[2000] bg-black bg-opacity-90 text-white flex items-center justify-center text-center text-xl font-semibold p-4 pointer-events-auto">
           <div className="animate-pulse">
+            <p>🔄</p>
             <p>📱 Please rotate your phone to landscape</p>
             <button 
               onClick={() => {
