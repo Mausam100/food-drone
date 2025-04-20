@@ -29,7 +29,7 @@ const StartOverlay = ({ onStart }) => {
   }, []);
   if (controlsStep === 0) {
     return (
-      <div className="absolute inset-0 bg-black/85 flex flex-col items-center justify-center z-50 text-white">
+      <div className="absolute w-full h-screen inset-0 bg-black/85 flex flex-col items-center justify-center z-50 text-white">
         <div className="text-center mb-4">
           <h1 className="text-2xl md:text-4xl font-bold mb-2">
             WELCOME TO <span className="text-orange-500">NEXDROP</span>
