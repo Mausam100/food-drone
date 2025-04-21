@@ -5,6 +5,7 @@ import React, {
   useMemo,
   useRef,
 } from "react";
+import RotateOverlay from "../Home/RotateOverlay";
 
 // Constants
 const JOYSTICK_SIZE = "min(30vw,150px)";
@@ -264,21 +265,10 @@ export function MobileControls({
     <>
       {/* ROTATE PHONE OVERLAY */}
       {showRotateOverlay && (
-        <div className="fixed inset-0 z-[2000] bg-black bg-opacity-90 text-white flex items-center justify-center text-center text-xl font-semibold p-4 pointer-events-auto">
-          <div className="animate-pulse">
-            <p>🔄</p>
-            <p>📱 Please rotate your phone to landscape</p>
-            <button
-              onClick={() => {
-                toggleFullScreen();
-                lockOrientation();
-              }}
-              className="mt-4 px-6 py-2 bg-[#00c3ae] rounded-lg text-white font-medium hover:bg-[#004a41] transition-colors"
-            >
-              Enter Fullscreen
-            </button>
-          </div>
-        </div>
+        <RotateOverlay
+          toggleFullScreen={toggleFullScreen}
+          lockOrientation={lockOrientation}
+        />
       )}
 
       {/* TOUCH CONTROLS */}
