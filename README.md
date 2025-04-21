@@ -1,12 +1,54 @@
-# React + Vite
+# Food Drone Project
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a React-based application built with Vite. It features a 3D drone simulation using `@react-three/fiber` and other supporting libraries.
 
-Currently, two official plugins are available:
+## Features
+- 3D drone simulation with checkpoints and end goals.
+- Responsive design with support for mobile controls.
+- Performance optimization using `@react-three/drei` utilities.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## Installation
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Follow these steps to set up the project locally:
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Mausam100/food-drone.git
+
+2. Navigate to the project directory:
+   `cd food-drone`
+
+ 3. Install dependencies:
+ `npm install`
+
+## Running the Project
+To start the development server:
+ `npm run dev`
+
+  This will start the Vite development server. Open your browser and navigate to http://localhost:5173 (or the URL provided in the terminal).
+
+## Building for Production
+To create a production build:
+ `npm run build`
+
+## Previewing the Production Build
+To preview the production build locally:
+ `npm run serve`
+
+## Technologies Used
+- React: Frontend library for building user interfaces.
+- Vite: Fast build tool and development server.
+- @react-three/fiber: React renderer for Three.js.
+- @react-three/drei: Useful helpers for @react-three/fiber.
+- Rapier: Physics engine for 3D simulations.
+
+## License
+[MIT](LICENSE)
+
+## Contributing
+Contributions are welcome! Please open an issue or submit a pull request.
+
+## Author
+[Your Name](https://github.com/Mausam100)
