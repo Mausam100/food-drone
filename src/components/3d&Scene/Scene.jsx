@@ -12,6 +12,7 @@ import { Physics, RigidBody } from "@react-three/rapier";
 import City from "./Model/City";
 import DroneController from "../controller/DroneController";
 import GamePoints from "./GamePoints";
+
 export const Scene = ({
   touchControls,
   setTouchControls,
@@ -27,15 +28,19 @@ export const Scene = ({
   onPoint2Reached,
   onPoint3Reached,
 }) => {
+  // Determine if the user is on a mobile device
   const isMobile = useMemo(() => {
     return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   }, []);
-  
+
+  // State for device pixel ratio and quality
   const [dpr, setDpr] = useState(1);
   const [quality, setQuality] = useState(1);
+
+  // State for generating a random number
   const [randomNumber, setRandomNumber] = useState(0);
 
-  // Memoize the random points to avoid recreating them on every render
+  // Memoized random points for checkpoints
   const randomPoints = useMemo(() => ({
     point1: {
       position: [[3.1, 5.7, -14.8], [6.7, 5.7, -14.8], [9, 6.6, -9.5]],
@@ -45,18 +50,21 @@ export const Scene = ({
     },
     point3: {
       position: [[-17.3, 5.7, 12.8], [-18.7, 5.7, 14.8], [-18.7, 5.7, 12.8]],
-    }
+    },
   }), []);
 
-  // Generate random number only once on mount
+  // Generate a random number once when the component mounts
   useEffect(() => {
     setRandomNumber(Math.floor(Math.random() * 3));
   }, []);
-  
+
+  // Memoized skybox geometry
   const skyboxGeometry = useMemo(
     () => new THREE.SphereGeometry(50, isMobile ? 16 : 32, isMobile ? 16 : 32),
     [isMobile]
   );
+
+  // Memoized skybox material
   const skyboxMaterial = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
@@ -66,7 +74,8 @@ export const Scene = ({
       }),
     []
   );
- 
+
+  // Memoized physics settings
   const physicsSettings = useMemo(
     () => ({
       gravity: [0, 0, 0],
@@ -83,6 +92,7 @@ export const Scene = ({
 
   return (
     <>
+      {/* Performance Monitor to adjust DPR and quality dynamically */}
       <PerformanceMonitor
         factor={1}
         onChange={({ factor }) => {
@@ -91,12 +101,16 @@ export const Scene = ({
         }}
       />
 
+      {/* Scene background and fog */}
       <color attach="background" args={["#ffffff"]} />
       <fog attach="fog" color="#ffffff" near={1} far={100} />
+
+      {/* Lighting */}
       <ambientLight intensity={1} />
       <directionalLight position={[10, 10, 5]} intensity={1} />
       <Environment preset="city" />
 
+      {/* Adaptive settings for mobile devices */}
       {isMobile && (
         <>
           <AdaptiveDpr pixelated />
@@ -104,6 +118,7 @@ export const Scene = ({
         </>
       )}
 
+      {/* Skybox */}
       <mesh geometry={skyboxGeometry} material={skyboxMaterial}>
         <GradientTexture
           stops={[0, 0.5, 1]}
@@ -113,13 +128,16 @@ export const Scene = ({
         />
       </mesh>
 
+      {/* Physics simulation */}
       <Physics {...physicsSettings}>
+        {/* City bounds */}
         <Bounds fit clip observe margin={1.2}>
           <RigidBody type="fixed" colliders="hull">
             <City isMobile={isMobile} />
           </RigidBody>
         </Bounds>
 
+        {/* Drone controller */}
         <DroneController
           touchControls={touchControls}
           setTouchControls={setTouchControls}

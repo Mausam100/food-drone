@@ -19,7 +19,7 @@ import {
   handlePointClose,
 } from "./utils/allFun"; // Game controls
 
-// Game controls
+// Key mappings for keyboard controls
 const keyMap = [
   { name: "forward", keys: ["w"] },
   { name: "backward", keys: ["s"] },
@@ -33,6 +33,7 @@ const keyMap = [
 ];
 
 function App() {
+  // State variables for various game states
   const [loading, setLoading] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isFirstPerson, setIsFirstPerson] = useState(false);
@@ -52,33 +53,34 @@ function App() {
   const [restartTrigger, setRestartTrigger] = useState(false);
   const [dpr, setDpr] = useState(2);
 
-  // Handle fullscreen functionality
+  // Effect to handle fullscreen changes
   useEffect(() => {
     const handleFullscreenChange = () => {
-      // You can add any logic here that needs to run when fullscreen changes
       console.log("Fullscreen changed:", !!document.fullscreenElement);
     };
 
-    // Add event listener for fullscreen changes
     document.addEventListener("fullscreenchange", handleFullscreenChange);
 
-    // Cleanup function
     return () => {
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
     };
   }, []);
 
+  // Effect to detect if the user is on a mobile device
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
     };
+
     checkMobile();
     window.addEventListener("resize", checkMobile);
+
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   return loading ? (
     <div className="w-full h-screen select-none">
+      {/* Keyboard controls wrapper */}
       <KeyboardControls map={keyMap}>
         <Canvas
           dpr={dpr}
@@ -88,11 +90,14 @@ function App() {
             near: 0.1,
           }}
         >
+          {/* Performance monitor to dynamically adjust DPR */}
           <PerformanceMonitor
             factor={1}
             onChange={({ factor }) => setDpr(Math.floor(0.5 + 1.5 * factor, 1))}
           />
+
           <Suspense fallback={null}>
+            {/* Main 3D Scene */}
             <Scene
               touchControls={touchControls}
               setTouchControls={setTouchControls}
@@ -137,6 +142,8 @@ function App() {
           </Suspense>
         </Canvas>
       </KeyboardControls>
+
+      {/* Mobile controls for touch devices */}
       {isMobile && (
         <MobileControls
           touchControls={touchControls}
@@ -145,7 +152,8 @@ function App() {
           setIsFirstPerson={setIsFirstPerson}
         />
       )}
-      {/* {showStartOverlay && <StartOverlay onStart={() => handleStart(setShowStartOverlay)} />} */}
+
+      {/* End overlay */}
       {showEndOverlay && (
         <EndOverlay
           onRestart={() =>
@@ -157,12 +165,16 @@ function App() {
           }
         />
       )}
+
+      {/* Checkpoints cleared overlay */}
       {showCheckpointsCleared && (
         <PointOverlay
           heading="Checkpoints Cleared"
           onClose={() => setShowCheckpointsCleared(false)}
         />
       )}
+
+      {/* Point 1 overlay */}
       {point1Reached && (
         <PointOverlay
           heading={"Point 1"}
@@ -175,6 +187,8 @@ function App() {
           }
         />
       )}
+
+      {/* Point 2 overlay */}
       {point2Reached && (
         <PointOverlay
           heading={"Point 2"}
@@ -187,6 +201,8 @@ function App() {
           }
         />
       )}
+
+      {/* Point 3 overlay */}
       {point3Reached && (
         <PointOverlay
           heading={"Point 3"}
@@ -201,6 +217,7 @@ function App() {
       )}
     </div>
   ) : (
+    // Start overlay when loading is false
     <div className="w-full h-screen select-none">
       <StartOverlay onStart={() => setLoading(true)} />
     </div>
