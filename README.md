@@ -51,4 +51,4 @@ To preview the production build locally:
 Contributions are welcome! Please open an issue or submit a pull request.
 
 ## Author
-[Your Name](https://github.com/Mausam100)
+[Mausam Singh](https://github.com/Mausam100)
