@@ -117,7 +117,7 @@ function DroneController({
     ]
   );
 
-  // Function to update the camera position and rotation
+  // Function to update the camera position and rotation 
   const updateCamera = useCallback(
     (pos, rotation, isFirstPerson) => {
       const euler = new THREE.Euler(0, rotation, 0);
