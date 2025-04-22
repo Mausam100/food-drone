@@ -4,7 +4,7 @@ import { RigidBody, useRapier } from "@react-three/rapier";
 import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import Drone from "../3d&Scene/Model/Drone";
 import * as THREE from "three";
-import GamePoints from "../3d&Scene/GamePoints";
+
 
 function DroneController({
   touchControls,
@@ -19,6 +19,7 @@ function DroneController({
   randomPoints,
   randomNumber,
   setShowCheckpointsCleared,
+  droneColor,
 }) {
   // References and state variables
   const droneRef = useRef();
@@ -42,7 +43,7 @@ function DroneController({
   }, []);
 
   // Speed settings based on device type
-  const [speed, setSpeed] = useState(isMobile ? 2 : 5); // Base speed
+  const [speed, setSpeed] = useState(isMobile ? 3 : 5); // Base speed
   const maxSpeed = isMobile ? 4 : 10; // Maximum speed
   const minSpeed = isMobile ? 0.5 : 1; // Minimum speed
   const speedIncrement = isMobile ? 0.2 : 0.1; // Speed change rate
@@ -381,17 +382,7 @@ function DroneController({
       lockRotations={false}
       position={[21.2, 3.3, -18]}
     >
-      {/* Drone model */}
-      <Drone rotation={[0, rotation, 0]} />
-
-      {/* Drone position display */}
-      <group position={[0, -1, 0]}>
-        <GamePoints.DronePosition
-          rotation={rotation}
-          arrowRotation={arrowRotation}
-          position={dronePosition}
-        />
-      </group>
+      <Drone rotation={[0, rotation, 0]} color={droneColor} />
     </RigidBody>
   );
 }

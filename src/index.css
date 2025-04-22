@@ -2,16 +2,11 @@
 
 @font-face {
   font-family: "ZF2334";
-  src: url("/public/fonts/ZF2334_squircle/ZF2334 Squircle - Regular.otf") ;
+  src: url("/fonts/ZF2334_squircle/ZF2334 Squircle - Regular.otf") ;
 }
 
 body {
-  background-color: #44838e;
-  /* margin: 0; */
-  /* display: flex; */
-  /* justify-content: center; */
-  /* align-items: center; */
-  /* min-height: 100vh; */
+  background-color: #0c8ea5;
 }
 
 body::before {

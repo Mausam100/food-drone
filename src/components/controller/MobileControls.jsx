@@ -331,8 +331,8 @@ export function MobileControls({
 
         {/* FIRST PERSON TOGGLE */}
         <button
-          className={`pointer-events-auto fixed ${
-            isFirstPerson ? "bg-[#004a41]" : "bg-[#00c3b049]"
+          className={`pointer-events-auto w-50 fixed left-4 top-1 ${
+            isFirstPerson ? "bg-[#004a41]" : "bg-[#00c3b0b2]"
           } text-white rounded-full shadow-md font-medium transition-all duration-200 active:scale-95 active:opacity-70 hover:bg-opacity-90`}
           style={styles.firstPersonButton}
           onClick={handleFirstPersonToggle}

@@ -17,6 +17,7 @@ const StartOverlay = ({ onStart }) => {
     setControlsStep(2);
   };
 
+
   const handleLetsGo = () => {
     setControlsStep(0);
     onStart();
@@ -231,33 +232,53 @@ const StartOverlay = ({ onStart }) => {
 
   if (controlsStep === 2) {
     return (
-      <div className="absolute inset-0 bg-black flex flex-col items-center justify-center z-50 text-white">
-        <div className="text-center mb-6">
-          <h1 className="text-2xl md:text-4xl font-bold mb-4 MISSION_DELIVER_THE_PACKAGE">
-            <span className="text-orange-500">MISSION</span> DELIVER THE PACKAGE
+      <div className="absolute inset-0 bg-black/90 backdrop-blur-sm flex flex-col items-center justify-center z-50 text-white p-6">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">
+            <span className="text-[#00c3ae]">MISSION</span> OBJECTIVES
           </h1>
         </div>
 
-        <div className="max-w-2xl text-center mb-12">
-          <ul className="uppercase text-lg tracking-wide leading-relaxed space-y-6 MISSION_DELIVER_THE_PACKAGE_UL">
-            <li>• FLY THROUGH EACH GLOWING CHECKPOINT.</li>
-            <li>
-              • STAY ON THE PATH TO REACH{" "}
-              <span className="text-orange-500">THE DELIVERY ZONE</span>.
-            </li>
-            <li>• MISSED ONE? TURN BACK AND COLLECT IT.</li>
-          </ul>
+        <div className="max-w-2xl text-center mb-8">
+          <div className="lg:space-y-6 text-lg">
+            <div className="flex items-center justify-center gap-4">
+              <div className="bg-[#1a1a1a] p-3 rounded-lg">
+                <span className="text-[#00c3ae] text-2xl">🎯</span>
+              </div>
+              <span>Fly through all checkpoints in sequence</span>
+            </div>
+            <div className="flex items-center justify-center gap-4">
+              <div className="bg-[#1a1a1a] p-3 rounded-lg">
+                <span className="text-[#00c3ae] text-2xl">🏁</span>
+              </div>
+              <span>Reach the final delivery zone</span>
+            </div>
+            <div className="flex items-center justify-center gap-4">
+              <div className="bg-[#1a1a1a] p-3 rounded-lg">
+                <span className="text-[#00c3ae] text-2xl">⚠️</span>
+              </div>
+              <span>Don't miss any checkpoints</span>
+            </div>
+          </div>
         </div>
 
-        <div className="flex justify-center">
+        <div className="flex gap-6">
           <div
-            className="relative cursor-pointer"
-            typeof="button"
+            className="relative cursor-pointer group"
+            onClick={() => setControlsStep(1)}
+          >
+            <img src="/button.svg" width={220} className="transition-transform duration-300 group-hover:scale-105" />
+            <h2 className="w-full text-center absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] text-white font-bold">
+              BACK
+            </h2>
+          </div>
+          <div
+            className="relative cursor-pointer group"
             onClick={handleLetsGo}
           >
-            <img src="/button.svg" width={220} />
-            <h2 className="w-full text-center absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]">
-              LET'S GO
+            <img src="/button.svg" width={220} className="transition-transform duration-300 group-hover:scale-105" />
+            <h2 className="w-full text-center absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] text-white font-bold">
+              START FLIGHT
             </h2>
           </div>
         </div>

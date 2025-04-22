@@ -58,32 +58,10 @@ const CheckpointCylinder = ({ position, height = 5, radius = 2, color = "#00adca
   );
 };
 
-// DronePosition component: Displays the drone's position and rotation
-const DronePosition = ({ position, rotation, arrowRotation }) => {
-  return (
-    <group position={[0, 0, 0]}>
-      {/* Display drone position as text */}
-      <Text
-        rotation={[0, rotation + Math.PI, 0]}
-        position={[0, 0.5, 0]}
-        fontSize={0.2}
-        color="white"
-        anchorX="center"
-        anchorY="middle"
-        // outlineWidth={0.02} // Uncomment if outline is needed
-        // outlineColor="#000000" // Uncomment if outline is needed
-      >
-        {`X: ${position[0].toFixed(1)} Y: ${position[1].toFixed(1)} Z: ${position[2].toFixed(1)}`}
-      </Text>
-    </group>
-  );
-};
-
-// Export all game point components as a single object
 const GamePoints = {
   StartPoint,
   EndPoint,
-  DronePosition,
+  
   CheckpointCylinder,
 };
 

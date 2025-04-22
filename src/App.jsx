@@ -10,6 +10,8 @@ import { MobileControls } from "./components/controller/MobileControls"; // Mobi
 import EndOverlay from "./components/Home/EndOverlay"; // End overlay
 import StartOverlay from "./components/Home/StartOverlay"; // Start overlay
 import PointOverlay from "./components/Home/PointOverlay"; // Point overlay
+import MobileWarning from "./components/Home/MobileWarning";
+import DroneCustomization from "./components/3d&Scene/Model/DroneCustomization";
 import {
   handleReachEnd,
   handlePoint1Reached,
@@ -52,6 +54,8 @@ function App() {
   const [showCheckpointsCleared, setShowCheckpointsCleared] = useState(false);
   const [restartTrigger, setRestartTrigger] = useState(false);
   const [dpr, setDpr] = useState(2);
+  const [showMobileWarning, setShowMobileWarning] = useState(false);
+  const [droneColor, setDroneColor] = useState("#00c3ae");
 
   // Effect to handle fullscreen changes
   useEffect(() => {
@@ -78,8 +82,25 @@ function App() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
+  // Effect to show mobile warning
+  useEffect(() => {
+    if (isMobile) {
+      setShowMobileWarning(true);
+    }
+  }, [isMobile]);
+
   return loading ? (
     <div className="w-full h-screen select-none font-ZF2334">
+      {/* Mobile Warning */}
+      {showMobileWarning && (
+        <MobileWarning onClose={() => setShowMobileWarning(false)} />
+      )}
+
+      {/* Drone Customization */}
+      <DroneCustomization
+        onColorChange={setDroneColor}
+      />
+
       {/* Keyboard controls wrapper */}
       <KeyboardControls map={keyMap}>
         <Canvas
@@ -137,6 +158,7 @@ function App() {
               point1Reached={point1Reached}
               point2Reached={point2Reached}
               point3Reached={point3Reached}
+              droneColor={droneColor}
             />
             <Preload all  />
           </Suspense>

@@ -27,6 +27,7 @@ export const Scene = ({
   onPoint1Reached,
   onPoint2Reached,
   onPoint3Reached,
+  droneColor,
 }) => {
   // Determine if the user is on a mobile device
   const isMobile = useMemo(() => {
@@ -151,6 +152,7 @@ export const Scene = ({
           randomPoints={randomPoints}
           randomNumber={randomNumber}
           setShowCheckpointsCleared={setShowCheckpointsCleared}
+          droneColor={droneColor}
         />
 
         {/* Game Points */}
