@@ -59,7 +59,7 @@ const StartOverlay = ({ onStart }) => {
         setShowRotateOverlay(isPortrait);
       }, 100);
     };
-
+ 
     checkOrientation();
     window.addEventListener("orientationchange", checkOrientation);
     window.addEventListener("resize", checkOrientation);
