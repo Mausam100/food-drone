@@ -169,7 +169,7 @@ const StartOverlay = ({ onStart }) => {
             typeof="button"
             onClick={handleLearnControls}
           >
-            <img src="/button.svg" width={220} />
+            <img src="/images/button.svg" width={220} />
             <h2 className="w-full text-center absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]">
               LEARN CONTROLS
             </h2>
@@ -201,12 +201,12 @@ const StartOverlay = ({ onStart }) => {
 
         <div className="w-full flex justify-around items-center">
           <img
-            src="/showcontrolsStep.svg"
+            src="/images/showcontrolsStep.svg"
             alt="WASD Controls"
             className="w-[25%] h-auto LEARNCONTROLS_IMG"
           />
           <img
-            src="/f_key.svg"
+            src="/images/f_key.svg"
             alt="WASD Controls"
             className="w-[10%] absolute top-[70%] left-[50%] -translate-x-[50%] -translate-y-[50%] LEARNCONTROLS_IMG"
           />
@@ -215,13 +215,13 @@ const StartOverlay = ({ onStart }) => {
             typeof="button"
             onClick={handleContinue}
           >
-            <img src="/button.svg" width={220} />
+            <img src="/images/button.svg" width={220} />
             <h2 className="w-full text-center absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]">
               CONTINUE
             </h2>
           </div>
           <img
-            src="/arrow-controls.svg"
+            src="/images/arrow-controls.svg"
             alt="Arrow Controls"
             className="w-[25%] h-auto LEARNCONTROLS_IMG"
           />
@@ -267,7 +267,7 @@ const StartOverlay = ({ onStart }) => {
             className="relative cursor-pointer group"
             onClick={() => setControlsStep(1)}
           >
-            <img src="/button.svg" width={220} className="transition-transform duration-300 group-hover:scale-105" />
+            <img src="/images/button.svg" width={220} className="transition-transform duration-300 group-hover:scale-105" />
             <h2 className="w-full text-center absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] text-white font-bold">
               BACK
             </h2>
@@ -276,7 +276,7 @@ const StartOverlay = ({ onStart }) => {
             className="relative cursor-pointer group"
             onClick={handleLetsGo}
           >
-            <img src="/button.svg" width={220} className="transition-transform duration-300 group-hover:scale-105" />
+            <img src="/images/button.svg" width={220} className="transition-transform duration-300 group-hover:scale-105" />
             <h2 className="w-full text-center absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] text-white font-bold">
               START FLIGHT
             </h2>
