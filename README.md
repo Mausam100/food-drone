@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Food Drone Banner](/public/drone.png)
+![Food Drone Banner](/public/images/drone.png)
 
 A cutting-edge React-based food delivery drone simulation platform, revolutionizing the future of delivery visualization.
 
