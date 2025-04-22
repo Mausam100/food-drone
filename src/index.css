@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
-/* @font-face {
+@font-face {
   font-family: "ZF2334";
   src: url("/fonts/ZF2334_squircle/ZF2334 Squircle - Regular.otf") ;
-} */
+}
 
 body {
   background-color: #0c8ea5;
