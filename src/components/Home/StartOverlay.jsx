@@ -166,7 +166,7 @@ const StartOverlay = ({ onStart }) => {
   }
   if (controlsStep === 1) {
     return (
-      <div className="font-ZF2334 absolute inset-0 bg-black flex flex-col items-center justify-center z-50 text-white">
+      <div className="font-ZF2334 absolute inset-0 bg-black flex flex-col items-center justify-center z-50 text-white overflow-hidden max-lg:p-9">
         <div className="text-center mb-4">
           <h1 className="text-2xl md:text-4xl font-bold mb-4 LEARNCONTROLS">
             CONTROLS TO FLY <span className="text-orange-500">DRONE</span>

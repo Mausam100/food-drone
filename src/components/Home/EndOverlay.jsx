@@ -75,7 +75,7 @@ const EndOverlay = ({ onRestart }) => {
               className="relative cursor-pointer"
               style={{ width: 140, height: 44 }}
               onClick={() => {
-                toggleFullScreen();
+                // toggleFullScreen();
                 onRestart();
               }}
             >
