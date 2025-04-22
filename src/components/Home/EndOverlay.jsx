@@ -53,7 +53,7 @@ const EndOverlay = ({ onRestart }) => {
             </div>
             <div className="max-lg:absolute top-10 right-3 lg:mt-0 lg:ml-8 flex-shrink-0 flex justify-center items-start">
               <img
-                src="/drone.png"
+                src="/images/drone.png"
                 alt="Drone"
                 className="w-35 lg:w-64 h-auto drop-shadow-2xl"
               />
@@ -79,7 +79,7 @@ const EndOverlay = ({ onRestart }) => {
                 onRestart();
               }}
             >
-              <img src="/button.svg" alt="Replay" className="w-full h-full" />
+              <img src="/images/button.svg" alt="Replay" className="w-full h-full" />
               <span
                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 uppercase font-bold text-sm tracking-wider text-white"
                 style={{ color: "#fff" }}
@@ -93,7 +93,7 @@ const EndOverlay = ({ onRestart }) => {
               className="relative cursor-pointer"
               style={{ width: 140, height: 44 }}
             >
-              <img src="/button.svg" alt="Github" className="w-full h-full" />
+              <img src="/images/button.svg" alt="Github" className="w-full h-full" />
               <span
                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 uppercase font-bold text-sm tracking-wider"
                 style={{ color: "#fff" }}

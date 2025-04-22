@@ -11,7 +11,7 @@ const RotateOverlay = ({ toggleFullScreen, lockOrientation }) => {
         </div>
         <div className="mb-4">
           <img
-            src="/rotate-phone.gif"
+            src="/images/rotate-phone.gif"
             alt="Rotate Device"
             className="w-35 block md:hidden h-auto"
           />
@@ -30,7 +30,7 @@ const RotateOverlay = ({ toggleFullScreen, lockOrientation }) => {
           className="relative w-48 h-12 flex items-center justify-center group"
         >
           <img
-            src="/button.svg"
+            src="/images/button.svg"
             alt="Enter Fullscreen"
             className="absolute inset-0 w-full h-full"
           />
