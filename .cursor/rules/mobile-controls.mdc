@@ -1,0 +1,35 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Mobile Controls and Device Orientation
+
+## Orientation Management
+Reference implementation in [src/components/controller/MobileControls.jsx](mdc:src/components/controller/MobileControls.jsx)
+
+### Key Requirements
+1. Always check and handle device orientation
+2. Implement rotation overlay for portrait mode
+3. Use debounced orientation checks
+4. Handle cleanup properly
+
+## Best Practices
+- Use `window.matchMedia` for orientation detection
+- Implement orientation lock when possible
+- Handle fullscreen mode together with orientation
+- Use timeouts to debounce orientation changes
+- Clear all listeners and timeouts on unmount
+
+## Implementation Pattern
+```javascript
+// Orientation check pattern
+const checkOrientation = () => {
+  if (touchTimeout.current) clearTimeout(touchTimeout.current);
+  touchTimeout.current = setTimeout(() => {
+    const isPortrait = window.matchMedia("(orientation: portrait)").matches;
+    setShowRotateOverlay(isPortrait);
+  }, 100);
+};
+```
+

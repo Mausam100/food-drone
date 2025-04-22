@@ -276,22 +276,22 @@ export function MobileControls({
         {/* Joystick */}
         <div
           ref={joystickRef}
-          className="fixed bg-[#2a2a72] bg-opacity-80 rounded-full backdrop-blur-sm border-2 border-[#00c3ae] border-opacity-50 shadow-lg shadow-[#00c3ae]/20 transition-all duration-300 ease-out pointer-events-auto"
+          className="fixed  bg-[#32838552] backdrop-blur-[1px] z-50 bg-opacity-80 rounded-full  border-1 border-[#00c3b06c] border-opacity-50 shadow-lg shadow-[#00c3ae]/20 transition-all duration-300 ease-out pointer-events-auto"
           style={styles.joystick}
         >
           {/* Joystick background */}
-          <div className="absolute inset-0 rounded-full bg-[#2a2a72] bg-opacity-50" />
+          <div className="absolute inset-0 rounded-full  bg-opacity-50" />
 
           {/* Joystick thumb */}
           <div
-            className="absolute left-1/2 top-1/2 bg-[#00c3ae] bg-opacity-90 rounded-full transform -translate-x-1/2 -translate-y-1/2 backdrop-blur-sm border-2 border-white border-opacity-50 shadow-md shadow-[#00c3ae]/30 transition-transform duration-100"
+            className="absolute left-1/2 top-1/2 bg-[#00c3b0ee] bg-opacity-90 rounded-full transform -translate-x-1/2 -translate-y-1/2 backdrop-blur-sm border-1 border-white border-opacity-50 shadow-md shadow-[#00c3ae]/30 transition-transform duration-100"
             style={styles.joystickThumb}
           />
         </div>
 
         {/* ROTATE LEFT BUTTON */}
         <button
-          className="pointer-events-auto fixed bg-[#00c3ae] bg-opacity-80 rounded-full text-white font-bold shadow-md border border-white/50 active:scale-95 active:opacity-70 hover:bg-opacity-90 transition-all duration-200"
+          className="pointer-events-auto fixed bg-[#00c3b04e] bg-opacity-80 rounded-full text-white font-bold shadow-md border border-white/50 active:scale-95 active:opacity-70 hover:bg-opacity-90 transition-all duration-200"
           style={{ ...styles.button, ...styles.rotateButton }}
           onTouchStart={() => handleTouch("rotateLeft", true)}
           onTouchEnd={() => handleTouch("rotateLeft", false)}
@@ -301,7 +301,7 @@ export function MobileControls({
 
         {/* ROTATE RIGHT BUTTON */}
         <button
-          className="pointer-events-auto fixed bg-[#00c3ae] bg-opacity-80 rounded-full text-white font-bold shadow-md border border-white/50 active:scale-95 active:opacity-70 hover:bg-opacity-90 transition-all duration-200"
+          className="pointer-events-auto fixed bg-[#00c3b057] bg-opacity-80 rounded-full text-white font-bold shadow-md border border-white/50 active:scale-95 active:opacity-70 hover:bg-opacity-90 transition-all duration-200"
           style={{ ...styles.button, ...styles.rotateRightButton }}
           onTouchStart={() => handleTouch("rotateRight", true)}
           onTouchEnd={() => handleTouch("rotateRight", false)}
@@ -310,8 +310,9 @@ export function MobileControls({
         </button>
 
         {/* ASCEND BUTTON */}
+        {/* ASCEND/DESCEND BUTTONS */}
         <button
-          className="pointer-events-auto fixed bg-[#00c3ae] bg-opacity-80 rounded-full text-white font-bold shadow-md border border-white/50 active:scale-95 active:opacity-70 hover:bg-opacity-90 transition-all duration-200"
+          className="pointer-events-auto fixed bg-[#00c3b047] bg-opacity-80 rounded-full text-white font-bold shadow-md border border-white/50 active:scale-95 active:opacity-70 hover:bg-opacity-90 transition-all duration-200"
           style={{ ...styles.button, ...styles.upButton }}
           onTouchStart={() => handleTouch("up", true)}
           onTouchEnd={() => handleTouch("up", false)}
@@ -319,9 +320,8 @@ export function MobileControls({
           ↑
         </button>
 
-        {/* DESCEND BUTTON */}
         <button
-          className="pointer-events-auto fixed bg-[#00c3ae] bg-opacity-80 rounded-full text-white font-bold shadow-md border border-white/50 active:scale-95 active:opacity-70 hover:bg-opacity-90 transition-all duration-200"
+          className="pointer-events-auto fixed bg-[#00c3b04b] bg-opacity-80 rounded-full text-white font-bold shadow-md border border-white/50 active:scale-95 active:opacity-70 hover:bg-opacity-90 transition-all duration-200"
           style={{ ...styles.button, ...styles.downButton }}
           onTouchStart={() => handleTouch("down", true)}
           onTouchEnd={() => handleTouch("down", false)}
@@ -332,7 +332,7 @@ export function MobileControls({
         {/* FIRST PERSON TOGGLE */}
         <button
           className={`pointer-events-auto fixed ${
-            isFirstPerson ? "bg-[#004a41]" : "bg-[#00c3ae]"
+            isFirstPerson ? "bg-[#004a41]" : "bg-[#00c3b049]"
           } text-white rounded-full shadow-md font-medium transition-all duration-200 active:scale-95 active:opacity-70 hover:bg-opacity-90`}
           style={styles.firstPersonButton}
           onClick={handleFirstPersonToggle}

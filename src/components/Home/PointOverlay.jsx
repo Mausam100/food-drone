@@ -1,46 +1,31 @@
 import React from "react";
 
-const PointOverlay = ({ onClose, heading }) => {
+const PointOverlay = ({ onClose, heading, span, description, description2, description3 }) => {
   return (
-    <div className="absolute sm:top-[50%]  md:top-[50%] md:right-40 md:-translate-y-[50%] flex items-center justify-center z-50">
-      <div className="bg-gray-900/90 rounded-lg p-3 max-w-md w-full">
-        <h2 className="text-center text-2xl text-yellow-500 font-bold mb-6">
-          {heading}
-        </h2>
-
-        <div className="space-y-4 mb-4">
-          <div className="flex items-center">
-            <div className="w-full py-2 text-white text-center uppercase tracking-wider">
-              AI-POWERED DRONE NAVIGATION
-            </div>
-          </div>
-
-          <div className="flex items-center">
-            <div className="w-full py-2 text-white text-center uppercase tracking-wider">
-              3D WEB EXPERIENCE
-            </div>
-          </div>
-
-          <div className="flex items-center">
-            <div className="w-full py-2 text-white text-center uppercase tracking-wider">
-              ULTRA-FAST DISPATCH
-            </div>
-          </div>
-
-          <div className="flex items-center">
-            <div className="w-full py-2 text-white text-center uppercase tracking-wider">
-              END-TO-END SECURITY
-            </div>
-          </div>
+    <div className="absolute sm:bottom-5  md:left-[50%]  md:-translate-x-[50%] flex items-center justify-center z-30 w-[90%]   my-auto">
+      <div className="rounded-xl overflow-hidden w-fit ">
+        <div className="flex items-center p-2 bg-[#202023] rounde">
+          <span className="text-[#FF6A00] text-xl font-bold mr-2">
+            {span}
+          </span>
+          <h2 className="text-xl text-white font-bold">
+            {heading}
+          </h2>
         </div>
 
+        <div className={`flex ${!description2 && !description3 ? "justify-center" : "justify-between"} bg-[#2d2d30] items-center gap-10 p-5`}>
+          <p className="text-white text-sm font-bold ">
+            {description}
+          </p>
+          <p className="text-white text-sm font-bold">
+            {description2}
+          </p>
+          <p className="text-white text-sm font-bold">
+            {description3}
+          </p>
+        </div>
         <div className="flex justify-center">
-          <button
-            onClick={onClose}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md uppercase font-semibold tracking-wider transition-colors"
-          >
-            Continue
-          </button>
+      
         </div>
       </div>
     </div>

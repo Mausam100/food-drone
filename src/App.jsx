@@ -79,7 +79,7 @@ function App() {
   }, []);
 
   return loading ? (
-    <div className="w-full h-screen select-none">
+    <div className="w-full h-screen select-none font-ZF2334">
       {/* Keyboard controls wrapper */}
       <KeyboardControls map={keyMap}>
         <Canvas
@@ -138,7 +138,7 @@ function App() {
               point2Reached={point2Reached}
               point3Reached={point3Reached}
             />
-            <Preload all />
+            <Preload all  />
           </Suspense>
         </Canvas>
       </KeyboardControls>
@@ -177,7 +177,11 @@ function App() {
       {/* Point 1 overlay */}
       {point1Reached && (
         <PointOverlay
-          heading={"Point 1"}
+          heading={"Dispatch Systems"}
+          span={"Smart "}
+          description={
+            "AI instantly connects orders with available drones. Fast, smart, and always ready. Effect: Lines/light paths show optimized drone routes across the city."
+          }
           onClose={() =>
             handlePointClose(
               setPoint1Reached,
@@ -191,7 +195,11 @@ function App() {
       {/* Point 2 overlay */}
       {point2Reached && (
         <PointOverlay
-          heading={"Point 2"}
+          heading={"Friendly Flight"}
+          span={"Eco-"}
+          description={
+            "Zero carbon emissions No engine noise Supports a greener future."
+          }
           onClose={() =>
             handlePointClose(
               setPoint1Reached,
@@ -205,7 +213,11 @@ function App() {
       {/* Point 3 overlay */}
       {point3Reached && (
         <PointOverlay
-          heading={"Point 3"}
+          heading={"any where"}
+          span={"Delivery,"}
+          description={"Real-time tracking."}
+          description2={"Climate-controlled food."}
+          description3={"Delivered your way."}
           onClose={() =>
             handlePointClose(
               setPoint1Reached,

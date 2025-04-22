@@ -108,7 +108,7 @@ export const Scene = ({
       {/* Lighting */}
       <ambientLight intensity={1} />
       <directionalLight position={[10, 10, 5]} intensity={1} />
-      <Environment preset="city" />
+      <Environment preset="city" far={100} />
 
       {/* Adaptive settings for mobile devices */}
       {isMobile && (
@@ -122,7 +122,7 @@ export const Scene = ({
       <mesh geometry={skyboxGeometry} material={skyboxMaterial}>
         <GradientTexture
           stops={[0, 0.5, 1]}
-          colors={["#ffffff", "#00c3ae", "#004a41"]}
+          colors={["#44ffd1", "#00c3ae", "#004a41"]}
           size={isMobile ? 512 : 1024}
           attach="map"
         />

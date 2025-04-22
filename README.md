@@ -29,14 +29,6 @@ To start the development server:
 
   This will start the Vite development server. Open your browser and navigate to http://localhost:5173 (or the URL provided in the terminal).
 
-## Building for Production
-To create a production build:
- `npm run build`
-
-## Previewing the Production Build
-To preview the production build locally:
- `npm run serve`
-
 ## Technologies Used
 - React: Frontend library for building user interfaces.
 - Vite: Fast build tool and development server.
@@ -51,4 +43,6 @@ To preview the production build locally:
 Contributions are welcome! Please open an issue or submit a pull request.
 
 ## Author
+[Kenil sanagni](https://github.com/kenilgamer)
+
 [Mausam Singh](https://github.com/Mausam100)

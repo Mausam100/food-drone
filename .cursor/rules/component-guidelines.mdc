@@ -1,0 +1,29 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Component Guidelines
+
+## State Management
+- Use React hooks (`useState`, `useEffect`) for local component state
+- Implement cleanup in `useEffect` hooks to prevent memory leaks
+- Use refs (`useRef`) for values that shouldn't trigger re-renders
+
+## Animation Standards
+- Use GSAP with `useGSAP` hook for animations
+- Follow the animation pattern in [src/components/Home/StartOverlay.jsx](mdc:src/components/Home/StartOverlay.jsx)
+- Implement staggered animations for better UX
+
+## Mobile & Responsive Design
+- Always implement orientation checks for mobile devices
+- Use media queries for responsive layouts
+- Handle fullscreen mode appropriately
+- Clear timeouts and event listeners in cleanup functions
+
+## Code Organization
+- Group related state variables together
+- Place event handlers after state declarations
+- Keep animation logic in separate `useGSAP` hooks
+- Use semantic class names for animation targeting
+
