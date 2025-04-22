@@ -252,7 +252,7 @@ function App() {
     </div>
   ) : (
     // Start overlay when loading is false
-    <div className="w-full h-screen select-none">
+    <div className="font-ZF2334 w-full h-screen select-none">
       <StartOverlay onStart={() => setLoading(true)} />
     </div>
   );

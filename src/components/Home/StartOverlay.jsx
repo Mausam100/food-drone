@@ -126,7 +126,7 @@ const StartOverlay = ({ onStart }) => {
 
   if (controlsStep === 0) {
     return (
-      <div className="page-overlay1 absolute w-full h-screen inset-0 p-6 font-mono bg-black flex flex-col items-center justify-center z-50 text-white">
+      <div className="font-ZF2334 page-overlay1 absolute w-full h-screen inset-0 p-6 bg-black flex flex-col items-center justify-center z-50 text-white">
         <div className="text-center mb-4">
           <h1 className="text-2xl md:text-4xl font-bold mb-2 NEXDROP">
             WELCOME TO <span className="text-orange-500">NEXDROP</span>
@@ -166,7 +166,7 @@ const StartOverlay = ({ onStart }) => {
   }
   if (controlsStep === 1) {
     return (
-      <div className="absolute inset-0 bg-black flex flex-col items-center justify-center z-50 text-white">
+      <div className="font-ZF2334 absolute inset-0 bg-black flex flex-col items-center justify-center z-50 text-white">
         <div className="text-center mb-4">
           <h1 className="text-2xl md:text-4xl font-bold mb-4 LEARNCONTROLS">
             CONTROLS TO FLY <span className="text-orange-500">DRONE</span>
