@@ -90,7 +90,7 @@ function App() {
   }, [isMobile]);
 
   return loading ? (
-    <div className="w-full h-screen select-none font-ZF2334">
+    <div className="w-full h-[100dvh] select-none font-ZF2334">
       {/* Mobile Warning */}
       {showMobileWarning && (
         <MobileWarning onClose={() => setShowMobileWarning(false)} />
