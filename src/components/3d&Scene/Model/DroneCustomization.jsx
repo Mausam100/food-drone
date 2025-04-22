@@ -28,7 +28,7 @@ export default function DroneCustomization({ onColorChange, onModelChange }) {
     <>
       <button
         onClick={() => setIsPanelVisible(!isPanelVisible)}
-        className="fixed z-[1001] text-sm top-4 right-4 bg-[#00c3b0b2] backdrop-blur-sm p-2 rounded-lg border shadow-lg shadow-[#00c3ae]/10 text-white  transition-colors"
+        className="fixed z-70 text-sm top-4 right-4 bg-[#00c3b0b2] backdrop-blur-sm p-2 rounded-lg border shadow-lg shadow-[#00c3ae]/10 text-white  transition-colors"
       >
         {isPanelVisible ? 'Hide' : 'Show'} Customization
       </button>

@@ -112,21 +112,7 @@ const StartOverlay = ({ onStart }) => {
         stagger: 0.2,
       });
     }
-    if (controlsStep === 2) {
-      const tl = gsap.timeline();
-      tl.from(".MISSION_DELIVER_THE_PACKAGE", {
-        opacity: 0,
-        scale: 0,
-        duration: 1,
-        stagger: 0.2,
-      });
-      tl.from(".MISSION_DELIVER_THE_PACKAGE_UL li", {
-        opacity: 0,
-        scale: 0,
-        duration: 1,
-        stagger: 0.2,
-      });
-    }
+
   }, [controlsStep]);
 
   if (showRotateOverlay) {
@@ -208,10 +194,10 @@ const StartOverlay = ({ onStart }) => {
           <img
             src="/f_key.svg"
             alt="WASD Controls"
-            className="w-[10%] absolute top-[70%] left-[50%] -translate-x-[50%] -translate-y-[50%] LEARNCONTROLS_IMG"
+            className="w-[10%]  top-[70%] left-[50%] -translate-x-[50%] -translate-y-[50%] LEARNCONTROLS_IMG"
           />
           <div
-            className="relative cursor-pointer lg:-bottom-30"
+            className="absolute cursor-pointer bottom-20"
             typeof="button"
             onClick={handleContinue}
           >

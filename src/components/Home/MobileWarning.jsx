@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function MobileWarning({ onClose }) {
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100]  flex items-center justify-center p-4">
       <div className="bg-[#1a1a1a] rounded-xl p-6 max-w-md w-full border border-[#00c3ae]/20 shadow-lg shadow-[#00c3ae]/10">
         <div className="text-center mb-6">
           <h2 className="text-2xl font-bold text-white mb-2">Mobile Experience Notice</h2>

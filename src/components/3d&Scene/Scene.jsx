@@ -41,6 +41,21 @@ export const Scene = ({
   // State for generating a random number
   const [randomNumber, setRandomNumber] = useState(0);
 
+  // State for day and night cycle
+  const [isDay, setIsDay] = useState(true);
+
+  // Update day/night cycle based on the current hour
+  useEffect(() => {
+    const updateDayNightCycle = () => {
+      const hour = new Date().getHours();
+      setIsDay(hour >= 6 && hour < 18);
+    };
+
+    updateDayNightCycle();
+    const interval = setInterval(updateDayNightCycle, 60000); // Update every minute
+    return () => clearInterval(interval);
+  }, []);
+
   // Memoized random points for checkpoints
   const randomPoints = useMemo(() => ({
     point1: {
@@ -103,12 +118,12 @@ export const Scene = ({
       />
 
       {/* Scene background and fog */}
-      <color attach="background" args={["#ffffff"]} />
-      <fog attach="fog" color="#ffffff" near={1} far={100} />
+      <color attach="background" args={[isDay ? "#87CEEB" : "#0D1B2A"]} />
+      <fog attach="fog" color={isDay ? "#87CEEB" : "#0D1B2A"} near={1} far={100} />
 
       {/* Lighting */}
-      <ambientLight intensity={1} />
-      <directionalLight position={[10, 10, 5]} intensity={1} />
+      <ambientLight intensity={isDay ? 1 : 0.3} />
+      <directionalLight position={[10, 10, 5]} intensity={isDay ? 1 : 0.5} />
       <Environment preset="city" far={100} />
 
       {/* Adaptive settings for mobile devices */}
@@ -123,7 +138,7 @@ export const Scene = ({
       <mesh geometry={skyboxGeometry} material={skyboxMaterial}>
         <GradientTexture
           stops={[0, 0.5, 1]}
-          colors={["#44ffd1", "#00c3ae", "#004a41"]}
+          colors={isDay ? ["#44ffd1", "#00c3ae", "#004a41"] : ["#0D1B2A", "#1B263B", "#415A77"]}
           size={isMobile ? 512 : 1024}
           attach="map"
         />
